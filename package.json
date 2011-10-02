@@ -7,6 +7,7 @@
   "directories":{ "lib": "./lib" },
   "main":"./lib/one.js",
   "bin":{
+    "onejs":"./bin/onejs"
   },
   "dependencies":{
     "npm":"*",
