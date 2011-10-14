@@ -4,6 +4,21 @@ var one = require('../lib/one'),
     fs = require('fs'),
     kick = require('highkick');
 
+one.quite(true);
+
+function verifyListContent(a,b){
+  return a.length == b.length && a.every(function(el){
+    return b.indexOf(el) > -1;
+  });
+}
+
+function test_verifyListContent(callback){
+  assert.ok(verifyListContent([3,1,4],[4,3,1]));
+  assert.ok(!verifyListContent([3,[1],4],[4,3,[1]]));
+  assert.ok(!verifyListContent([3,1,4],[3,1,6]));
+  assert.ok(!verifyListContent([3,1,4],[3,1,4,6]));
+  callback();
+}
 
 function test_build(callback){
   one.build('test/example-project', function(error, sourceCode){
@@ -75,6 +90,19 @@ function test_loadPackage(callback){
       assert.equal(pkg.modules.length, 2);
       assert.equal(pkg.modules[0].filename, 'a.js');
       assert.equal(pkg.modules[1].filename, 'b.js');
+
+      assert.equal(pkg.packageDict.dependency.modules.length, 2);
+      verifyListContent(['f.js','g.js'],pkg.packageDict.dependency.modules);
+
+      assert.equal(pkg.packageDict.subdependency.modules.length, 2);
+      assert.equal(pkg.packageDict.subdependency.modules[0].filename, 'i.js');
+      assert.equal(pkg.packageDict.subdependency.modules[1].filename, 'j.js');
+
+      assert.equal(pkg.packageDict.sibling.modules.length, 3);
+      assert.equal(pkg.packageDict.sibling.modules[0].filename, 'p/r.js');
+      assert.equal(pkg.packageDict.sibling.modules[2].filename, 's/t.js');
+      assert.equal(pkg.packageDict.sibling.modules[1].filename, 'n.js');
+
       callback();
     } catch(error) {
       callback(error);
@@ -83,7 +111,7 @@ function test_loadPackage(callback){
 }
 
 function test_collectModules(callback){
-  one.collectModules({ 'workingDir':'test/example-project/' }, function(error, modules){
+  one.collectModules({ 'name':'example-project', 'dirs':['lib'], 'workingDir':'test/example-project/' }, function(error, modules){
     try {
       assert.equal(modules.length, 2);
       assert.equal(modules[0].filename, 'a.js');
@@ -196,5 +224,6 @@ module.exports = {
   'test_loadModule':test_loadModule,
   'test_moduleName':test_moduleName,
   'test_flattenPackageTree':test_flattenPackageTree,
-  'test_makeVariableName':test_makeVariableName
+  'test_makeVariableName':test_makeVariableName,
+  'test_verifyListContent':test_verifyListContent
 }

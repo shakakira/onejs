@@ -1,3 +1,4 @@
 node_modules
+npm-debug.log
 !test/example-project/node_modules
 !test/example-project/node_modules/dependency/node_modules

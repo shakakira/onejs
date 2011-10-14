@@ -14,6 +14,7 @@
     "opts":"*",
     "combiner":"1.0.x",
     "mustache":"0.3.x",
-    "highkick":"1.0.x"
+    "highkick":"1.0.x",
+    "colors":"0.x"
   }
 }
