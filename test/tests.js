@@ -4,7 +4,7 @@ var one = require('../lib/one'),
     fs = require('fs'),
     kick = require('highkick');
 
-one.quite(true);
+one.quiet(true);
 
 function verifyListContent(a,b){
   return a.length == b.length && a.every(function(el){
@@ -21,16 +21,10 @@ function test_verifyListContent(callback){
 }
 
 function test_build(callback){
-  one.build('test/example-project', function(error, sourceCode){
-    fs.open('/tmp/__package.js', 'w', undefined, function(error, fd){
-      fs.write(fd, sourceCode, undefined, undefined, function(err, written){
-        if(err) throw err;
-        fs.close(fd, function(err){
-          if(err) throw err;
-          kick({ module:require('./templates'), 'silent':1, 'name':'templates' },function(error,result){
-            callback(result.fail);
-          });
-        });
+  one.build('test/example-project/package.json', function(error, sourceCode){
+    one.save('/tmp/__package.js', sourceCode, function(error){
+      kick({ module:require('./templates'), 'silent':0, 'name':' templates' },function(error,result){
+        callback(result.fail ? new Error('Fail') : undefined);
       });
     });
   });
@@ -45,11 +39,12 @@ function test_collectDeps(callback){
         'sibling':'*'
       } 
     },
-    'workingDir':'test/example-project/',
-    'packageDict':{}
+    'wd':'test/example-project/',
+    'pkgDict':{}
   };
 
   one.collectDeps(pkg, function(error, deps){
+    if(error) return callback(error);
     assert.equal(deps.length, 2);
     assert.equal(deps[0].name, 'dependency');
     assert.equal(deps[0].parent, pkg);
@@ -68,19 +63,18 @@ function test_id(callback){
   callback();
 }
 
-function test_loadPackage(callback){
-  one.loadPackage('test/example-project/', function(error, pkg){
+function test_loadPkg(callback){
+  one.loadPkg('test/example-project/package.json', function(error, pkg){
     if(error) return callback(error);
   
     try {
       assert.equal(typeof pkg.id, 'number');
       assert.equal(pkg.name, 'example-project');
       assert.equal(pkg.manifest.name, 'example-project');
-      assert.equal(pkg.manifestPath, 'test/example-project/package.json');
       assert.equal(pkg.dependencies.length, 2);
       assert.equal(pkg.main.filename, 'a.js');
 
-      var pkgDict = Object.keys(pkg.packageDict);
+      var pkgDict = Object.keys(pkg.pkgDict);
       assert.equal(pkgDict.length, 4);
       assert.equal(pkgDict[0], 'example-project');
       assert.equal(pkgDict[1], 'dependency');
@@ -91,17 +85,17 @@ function test_loadPackage(callback){
       assert.equal(pkg.modules[0].filename, 'a.js');
       assert.equal(pkg.modules[1].filename, 'b.js');
 
-      assert.equal(pkg.packageDict.dependency.modules.length, 2);
-      verifyListContent(['f.js','g.js'],pkg.packageDict.dependency.modules);
+      assert.equal(pkg.pkgDict.dependency.modules.length, 2);
+      verifyListContent(['f.js','g.js'],pkg.pkgDict.dependency.modules);
 
-      assert.equal(pkg.packageDict.subdependency.modules.length, 2);
-      assert.equal(pkg.packageDict.subdependency.modules[0].filename, 'i.js');
-      assert.equal(pkg.packageDict.subdependency.modules[1].filename, 'j.js');
+      assert.equal(pkg.pkgDict.subdependency.modules.length, 2);
+      assert.equal(pkg.pkgDict.subdependency.modules[0].filename, 'i.js');
+      assert.equal(pkg.pkgDict.subdependency.modules[1].filename, 'j.js');
 
-      assert.equal(pkg.packageDict.sibling.modules.length, 3);
-      assert.equal(pkg.packageDict.sibling.modules[0].filename, 'p/r.js');
-      assert.equal(pkg.packageDict.sibling.modules[2].filename, 's/t.js');
-      assert.equal(pkg.packageDict.sibling.modules[1].filename, 'n.js');
+      assert.equal(pkg.pkgDict.sibling.modules.length, 3);
+      assert.equal(pkg.pkgDict.sibling.modules[0].filename, 'p/r.js');
+      assert.equal(pkg.pkgDict.sibling.modules[2].filename, 's/t.js');
+      assert.equal(pkg.pkgDict.sibling.modules[1].filename, 'n.js');
 
       callback();
     } catch(error) {
@@ -111,7 +105,7 @@ function test_loadPackage(callback){
 }
 
 function test_collectModules(callback){
-  one.collectModules({ 'name':'example-project', 'dirs':['lib'], 'workingDir':'test/example-project/' }, function(error, modules){
+  one.collectModules({ 'name':'example-project', 'dirs':{'lib':'lib'}, 'wd':'test/example-project/' }, function(error, modules){
     try {
       assert.equal(modules.length, 2);
       assert.equal(modules[0].filename, 'a.js');
@@ -174,7 +168,18 @@ function test_makeVariableName(callback){
   callback();
 }
 
-function test_flattenPackageTree(callback){
+function test_loadManifest(callback){
+  one.loadManifest('test/example-project/package.json', function(error, manifest){
+    assert.equal(manifest.name, "example-project"); 
+    assert.equal(manifest.main, "./lib/a"); 
+    assert.equal(manifest.directories.lib, "./lib"); 
+    assert.equal(manifest.dependencies.dependency, "*"); 
+    assert.equal(manifest.dependencies.sibling, "*"); 
+    callback();
+  });
+}
+
+function test_flattenPkgTree(callback){
   var ids = [1,2,3,4,5,6,9,7,8],
       tree = {
         'id':1,
@@ -202,7 +207,7 @@ function test_flattenPackageTree(callback){
         ]
       };
 
-  var flat = one.flattenPackageTree(tree);
+  var flat = one.flattenPkgTree(tree);
   assert.equal(flat.length, 9);
 
   var i = 9;
@@ -215,15 +220,16 @@ function test_flattenPackageTree(callback){
 
 
 module.exports = {
-  'test_id':test_id,
   'test_build':test_build,
+  'test_collectDeps':test_collectDeps,
   'test_collectModules':test_collectModules,
   'test_filterFilename':test_filterFilename,
-  'test_loadPackage':test_loadPackage,
-  'test_collectDeps':test_collectDeps,
+  'test_flattenPkgTree':test_flattenPkgTree,
+  'test_id':test_id,
+  'test_loadManifest':test_loadManifest,
   'test_loadModule':test_loadModule,
-  'test_moduleName':test_moduleName,
-  'test_flattenPackageTree':test_flattenPackageTree,
+  'test_loadPkg':test_loadPkg,
   'test_makeVariableName':test_makeVariableName,
+  'test_moduleName':test_moduleName,
   'test_verifyListContent':test_verifyListContent
 }
