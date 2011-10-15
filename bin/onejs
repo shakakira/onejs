@@ -1,34 +1,63 @@
 #!/usr/bin/env node
 
 var one = require('../lib/one'),
-    opts = require('opts'),
     puts = require('sys').puts,
-    options,
     REV;
 
-REV = '1.0.0';
+var opt = require('optimist'),
+    argv = opt
+    .usage('Usage: $0 [OPTIONS]... [MANIFEST]')
+    .options('t',{
+      'alias':'target',
+      'describe':'Target file to save the output'
+    })
+    .options('quiet',{
+      'describe':'Make console output less verbose'
+    })
+    .options('verbose',{
+      'describe':'Tell what\'s going on by being verbose.'
+    })
+    .options('version',{
+      'describe':'Show version and exit'
+    })
+    .options('help',{
+      'describe':'Show help.'
+    })
+    .argv;
 
-opts.parse([{
-    'short':'v',
-    'long':'version',
-    'description':'Show version and exit',
-    'callback':version
-  }
-]);
+REV = '1.1.0';
 
-function run(){
-  var args = opts.args();
-  args.length == 0 && args.push('./');
-
-  one.build(args[0], function(error, sc){
+function run(manifest, target){
+  one.build(manifest, function(error, sc){
     if(error) throw error;
-    puts(sc);
+    one.save(target, sc, function(error){
+      if(error) throw error;
+      process.exit(0);
+    });
   });
 }
 
-function version(){
-  puts(REV);
+function help(){
+  opt.showHelp();
   process.exit(0);
 }
 
-run();
+function version(){
+  puts('OneJS v' + REV);
+  process.exit(0);
+}
+
+if(argv.t){
+  one.verbose(false);
+  argv.quiet && one.quiet(true);
+  argv.verbose && one.verbose(true);
+
+  run(argv._[0] || 'package.json', argv.t);
+
+} else if(argv.version){
+  version();
+} else {
+  help();
+}
+
+//run();
