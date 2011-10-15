@@ -9,12 +9,13 @@
   "bin":{
     "onejs":"./bin/onejs"
   },
+  "devDependencies":{
+    "highkick":"1.x"
+  },
   "dependencies":{
-    "npm":"*",
-    "opts":"*",
-    "combiner":"1.0.x",
-    "mustache":"0.3.x",
-    "highkick":"1.0.x",
+    "optimist":"0.x",
+    "combiner":"1.x",
+    "mustache":"0.x",
     "colors":"0.x"
   }
 }
