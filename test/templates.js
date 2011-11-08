@@ -1,7 +1,7 @@
 var assert = require('assert');
 
 function init(){
-  return require('/tmp/__package.js');
+  return require('../tmp/light.js');
 }
 
 function test_name(wrapper, callback){
@@ -11,13 +11,13 @@ function test_name(wrapper, callback){
 
 function test_findPkg(wrapper, callback){
   assert.equal(wrapper.findPkg(wrapper.map.main,'dependency').name, 'dependency');
-  assert.equal(wrapper.findPkg(wrapper.map[6], 'subdependency').name, 'subdependency');
-  assert.equal(wrapper.findPkg(wrapper.map[9], 'sibling').name, 'sibling');
+  assert.equal(wrapper.findPkg(wrapper.map[2], 'subdependency').name, 'subdependency');
+  assert.equal(wrapper.findPkg(wrapper.map[4], 'sibling').name, 'sibling');
   callback();
 }
 
 function test_findModule(wrapper, callback){
-  assert.equal(wrapper.findModule(wrapper.map[6].main, 'g'), wrapper.map[6].modules[1]);
+  assert.equal(wrapper.findModule(wrapper.map[2].main, 'g'), wrapper.map[2].modules[1]);
   callback();
 }
 
@@ -30,19 +30,20 @@ function test_packageTree(wrapper, callback){
 }
 
 function test_moduleTree(wrapper, callback){
+  assert.equal(wrapper.map[1].modules.length, 2);
+  assert.equal(wrapper.map[1].modules[0].id, 'a');
+  assert.equal(wrapper.map[1].modules[1].id, 'b');
+
   assert.equal(wrapper.map[3].modules.length, 2);
-  assert.equal(wrapper.map[3].modules[0].id, 'a');
-  assert.equal(wrapper.map[3].modules[1].id, 'b');
-  assert.equal(wrapper.map[9].modules.length, 2);
-  assert.equal(wrapper.map[9].modules[0].id, 'i');
-  assert.equal(wrapper.map[9].modules[1].id, 'j');
+  assert.equal(wrapper.map[3].modules[0].id, 'i');
+  assert.equal(wrapper.map[3].modules[1].id, 'j');
   callback();
 }
 
 function test_packageCtx(wrapper, callback){
-  var p = wrapper.map[3];
+  var p = wrapper.map[1];
   assert.equal(p.name, 'example-project');
-  assert.equal(p.id, 3);
+  assert.equal(p.id, 1);
   assert.equal(p.parent);
   assert.equal(p.mainModuleId, 'a');
   assert.equal(p.main.id, 'a');
@@ -55,7 +56,7 @@ function test_packageCtx(wrapper, callback){
 }
 
 function test_moduleCtx(wrapper, callback){
-  var m = wrapper.map[3].modules[0];
+  var m = wrapper.map[1].modules[0];
   assert.equal(m.id, 'a');
   assert.equal(m.pkg.name, 'example-project');
   assert.equal(typeof m.wrapper, 'function');

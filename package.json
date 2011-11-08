@@ -1,6 +1,6 @@
 {
   "name":"one",
-  "version":"1.1.0",
+  "version":"1.1.1",
   "description":"Transform NodeJS packages into single stand-alone script files.",
   "author":"Azer Koculu <azer@kodfabrik.com>",
   "keywords":["build","commonjs","browser"],
@@ -17,6 +17,6 @@
     "optimist":"0.x",
     "combiner":"1.x",
     "mustache":"0.x",
-    "colors":"0.x"
+    "log4js":"0.x"
   }
 }

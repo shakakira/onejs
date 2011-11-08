@@ -2,7 +2,11 @@ var {{ name }} = (function(global, undefined){
 
   var pkgmap = {},
       global = {},
+      library = undefined,
+      node = undefined,
       _;
+
+  {{>node}}
 
   {{>library}}
 
@@ -26,7 +30,7 @@ var {{ name }} = (function(global, undefined){
 
   function findModule(workingModule, uri){
     var module = undefined,
-        moduleId = lib.join(lib.dirname(workingModule.id), uri),
+        moduleId = lib.path.join(lib.path.dirname(workingModule.id), uri),
         pkg = workingModule.pkg;
 
     var i = pkg.modules.length;
