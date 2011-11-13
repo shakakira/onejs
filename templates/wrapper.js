@@ -6,8 +6,6 @@ var {{ name }} = (function(global, undefined){
       node = undefined,
       _;
 
-  {{>node}}
-
   {{>library}}
 
   function findPkg(workingPkg, uri){

@@ -1,12 +1,12 @@
+{{>node}}
+
 var lib = (function(){
   
   var exports = {};
 
-  exports.path = (function(exports){ 
-    {{>node_path}}
+  exports.node = node;
 
-    return exports;
-  })({});
+  exports.path = node.path;
 
   return exports;
 

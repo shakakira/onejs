@@ -1,4 +1,5 @@
 node_modules
 npm-debug.log
+tmp
 !test/example-project/node_modules
 !test/example-project/node_modules/dependency/node_modules

@@ -6,6 +6,10 @@ var one = require('../lib/one'),
 
 one.quiet(true);
 
+function init(options, callback){
+  callback();
+}
+
 function verifyListContent(a,b){
   return a.length == b.length && a.every(function(el){
     return b.indexOf(el) > -1;
@@ -23,7 +27,8 @@ function test_verifyListContent(callback){
 function test_light_build(callback){
   one.build({ 'manifestPath':'test/example-project/package.json' }, function(error, sourceCode){
     one.save('tmp/light.js', sourceCode, function(error){
-      kick({ module:require('./templates'), 'silent':0, 'name':' templates' },function(error,result){
+      kick({ module:require('./templates'), 'silent':1, 'name':'light build', 'target':'../tmp/light.js' },function(error,result){
+        if(error) return callback(error);
         callback(result.fail ? new Error('Fail') : undefined);
       });
     });
@@ -33,19 +38,22 @@ function test_light_build(callback){
 function test_node_build(callback){
   one.build({ 'manifestPath':'test/example-project/package.json', 'node':true }, function(error, sourceCode){
     one.save('tmp/node.js', sourceCode, function(error){
-      callback(new Error('not implemented'));
+      kick({ module:require('./templates'), 'silent':1, 'name':'node build', 'node':true, 'target':'../tmp/node.js' }, function(error,result){
+        if(error) return callback(error);
+        callback(result.fail ? new Error('Fail') : undefined);
+      });
     });
   });
 }
 
 function test_collectDeps(callback){
-  var pkg = { 
+  var pkg = {
     'name':'example-project',
-    'manifest':{ 
-      'dependencies':{ 
+    'manifest':{
+      'dependencies':{
         'dependency':'*',
         'sibling':'*'
-      } 
+      }
     },
     'wd':'test/example-project/',
     'pkgDict':{}
@@ -173,11 +181,11 @@ function test_makeVariableName(callback){
 
 function test_loadManifest(callback){
   one.loadManifest('test/example-project/package.json', function(error, manifest){
-    assert.equal(manifest.name, "example-project"); 
-    assert.equal(manifest.main, "./lib/a"); 
-    assert.equal(manifest.directories.lib, "./lib"); 
-    assert.equal(manifest.dependencies.dependency, "*"); 
-    assert.equal(manifest.dependencies.sibling, "*"); 
+    assert.equal(manifest.name, "example-project");
+    assert.equal(manifest.main, "./lib/a");
+    assert.equal(manifest.directories.lib, "./lib");
+    assert.equal(manifest.dependencies.dependency, "*");
+    assert.equal(manifest.dependencies.sibling, "*");
     callback();
   });
 }
@@ -195,8 +203,8 @@ function test_flattenPkgTree(callback){
               {
                 'id':5,
                 'dependencies':[
-                  { 
-                    'id':6, 
+                  {
+                    'id':6,
                     'dependencies':[
                       { 'id':9 }
                     ]
@@ -223,6 +231,7 @@ function test_flattenPkgTree(callback){
 
 
 module.exports = {
+  'init':init,
   'test_light_build':test_light_build,
   'test_node_build':test_node_build,
   'test_collectDeps':test_collectDeps,

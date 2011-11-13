@@ -1,14 +1,20 @@
-var node = (function(){
+node = (function(){
 
   var exports = {};
 
   exports.path = (function(exports){ 
-    {{>node_path}}
-  })();
+    {{>path}}
 
-  exports.process = (function(exports){
-    {{>node_process}}
+    return exports;
   })({});
+
+  {{#process}}
+  exports.process = (function(exports){
+    {{>process}}
+
+    return exports;
+  })({});
+  {{/process}}
 
   return exports;
 
