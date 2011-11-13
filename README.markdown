@@ -1,11 +1,20 @@
-Summary: Transform CommonJS packages into single, stand-alone JavaScript files. 
-Status: Being Tested
+OneJS is a command-line utility for converting CommonJS packages to single, stand-alone JavaScript
+files that can be run on the platforms with no CommonJS support, such as web browsers.
 
-Known Problems: 
-  - Doesn't support "directories" field of package manifests. 
+Motivation
+==========
+* NPM in Frontend Apps
+* Code reuse
+* Modularity
 
-Todo:
-  - Write Manual
-  - Build Website
+Install
+=======
+```bash
+$ npm install one -g
+```
 
-vim: tw=100
+Usage
+=====
+```bash
+$ onejs package.json -t built.js
+```
