@@ -43,10 +43,4 @@ exports.dirname = function (path) {
   return path && path.substr(0, path.lastIndexOf("/")) || ".";
 };
 
-exports.basename = function (path, ext) {
-  var f = path.substr(path.lastIndexOf("/") + 1);
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
+

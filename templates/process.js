@@ -1,9 +1,10 @@
 /**
- * This is module's purpose is to emulate NodeJS' process object on web browsers. It's not an alternative 
- * and/or partly implementation of the "process" object.
+ * This is module's purpose is to partly emulate NodeJS' process object on web browsers. It's not an alternative 
+ * and/or implementation of the "process" object.
  */
 
 function Buffer(size){
+  if (!(this instanceof Buffer)) return new Buffer(size);
   this.content = '';
 };
 
@@ -15,21 +16,20 @@ Buffer.prototype.write = function write(string){
   this.content += string;
 };
 
+global.Buffer = exports.Buffer = Buffer;
+
 function Stream(writable, readable){
-  this.buffer = new Buffer;
+  if (!(this instanceof Stream)) return new Stream(writable, readable);
+
   this.emulation = true;
   this.readable = readable;
   this.writable = writable;
   this.type = 'file';
-
-  if(!writable){
-    delete this.write;
-  }
 };
 
-Stream.prototype.write = function write(string){
-  return this.buffer.write(string);
-}
+Stream.prototype = exports.Buffer(0,0);
+
+exports.Stream = Stream;
 
 function notImplemented(){
   console.warn('Not Implemented.');
@@ -59,9 +59,9 @@ exports.nextTick = function nextTick(fn){
   return setTimeout(fn, 0);
 };
 
-exports.stderr = new Stream(true, false);
-exports.stdin = new Stream(false, true);
-exports.stdout = new Stream(true, false);
+exports.stderr = Stream(true, false);
+exports.stdin = Stream(false, true);
+exports.stdout = Stream(true, false);
 
 exports.version = '{{ node_version }}';
 

@@ -1,12 +1,16 @@
-{{>node}}
-
-var lib = (function(){
+lib = (function(){
   
-  var exports = {};
+  exports.path = (function(exports){ 
+    {{>path}}
 
-  exports.node = node;
+    return exports;
+  })({});
 
-  exports.path = node.path;
+  global.process = exports.process = (function(exports){
+    {{>process}}
+
+    return exports;
+  })({});
 
   return exports;
 

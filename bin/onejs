@@ -2,19 +2,13 @@
 
 var one = require('../lib/one'),
     puts = require('sys').puts,
-    buildOptions = {},
-    REV;
+    buildOptions = {};
+
+var REV = '1.1.0';
 
 var opt = require('optimist'),
     argv = opt
     .usage('Usage: $0 [OPTIONS]... [MANIFEST]')
-    .options('t',{
-      'alias':'target',
-      'describe':'Target file to save the output'
-    })
-    .options('node',{
-      'describe':'Include available node modules such as process, path. assert...'
-    })
     .options('quiet',{
       'describe':'Make console output less verbose'
     })
@@ -29,21 +23,32 @@ var opt = require('optimist'),
     })
     .argv;
 
-REV = '1.1.0';
+function build(){
+  var manifest = argv._[1],
+      target = argv._[2];
 
-function run(options, target){
-  one.build(options, function(error, sc){
+  one.build({ 'manifestPath':manifest || 'package.json' }, function(error, pkg){
     if(error) throw error;
-    one.save(target, sc, function(error){
-      if(error) throw error;
-      process.exit(0);
-    });
+    if(target){
+      one.save(target, pkg, function(error){
+        if(error) throw error;
+        process.exit(0);
+      });
+    } else {
+      puts(pkg);
+    }
   });
 }
 
 function help(){
-  opt.showHelp();
+  opt.showHelp(puts);
   process.exit(0);
+}
+
+function verbosity(){
+  one.verbose(false);
+  argv.quiet && one.quiet(true);
+  argv.verbose && one.verbose(true);
 }
 
 function version(){
@@ -51,20 +56,17 @@ function version(){
   process.exit(0);
 }
 
+var action = argv._[0];
 
-if(argv.t){
-  one.verbose(false);
-  argv.quiet && one.quiet(true);
-  argv.verbose && one.verbose(true);
-
-  buildOptions.node = argv.node;
-  buildOptions.manifestPath = argv._[0] || 'package.json';
-
-  run(buildOptions, argv.t);
-
-} else if(argv.version){
-  version();
-} else {
-  help();
+switch(action){
+  case 'build': build(); break;
+  case 'publish': publish(); break;
+  case: 'require': require(); break;
+  default:
+    if(argv.version){
+      version();
+    } else {
+      help();
+    }
 }
 

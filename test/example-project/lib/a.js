@@ -1,3 +1,8 @@
 require('dependency');
 
-exports.a = true;
+module.exports = {
+  'a':true,
+  'global':global,
+  'process':process,
+  'Buffer':Buffer
+}

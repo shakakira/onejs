@@ -2,9 +2,8 @@ var {{ name }} = (function(global, undefined){
 
   var pkgmap = {},
       global = {},
-      library = undefined,
-      node = undefined,
-      _;
+      lib = undefined,
+      locals;
 
   {{>library}}
 
@@ -60,23 +59,26 @@ var {{ name }} = (function(global, undefined){
 
   function module(parentId, wrapper){
     var parent = pkgmap[parentId],
-        ctx = wrapper(parent),
-        exports = undefined;
+        mod = wrapper(parent),
+        cached = false;
 
-    ctx.require = genRequire(ctx);
-    ctx.call = function(){
-      if(exports) return exports;
-      exports = {};
-      ctx.wrapper(ctx, exports, ctx.require, global); 
-      return exports;
+    mod.exports = {};
+    mod.require = genRequire(mod);
+
+    mod.call = function call_module_wrapper(){
+      if(cached) return mod.exports;
+      cached = true;
+      global.require = mod.require;
+      mod.wrapper(mod, mod.exports, global, global.Buffer, global.process, global.require);
+      return mod.exports;
+    };
+
+    if(parent.mainModuleId == mod.id){ 
+      parent.main = mod;
+      !parent.parent && ( locals.main = mod.call );
     }
 
-    if(parent.mainModuleId == ctx.id){ 
-      parent.main = ctx;
-      !parent.parent && ( _.main = ctx.call );
-    }
-
-    parent.modules.push(ctx);
+    parent.modules.push(mod);
   }
 
   function pkg(parentId, wrapper){
@@ -94,7 +96,7 @@ var {{ name }} = (function(global, undefined){
     return pkgmap.main.main.require(uri);
   }
 
-  return (_ = {
+  return (locals = {
     'lib':lib,
     'findPkg':findPkg,
     'findModule':findModule,

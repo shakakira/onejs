@@ -24,21 +24,12 @@ function test_verifyListContent(callback){
   callback();
 }
 
-function test_light_build(callback){
+function test_build(callback){
   one.build({ 'manifestPath':'test/example-project/package.json' }, function(error, sourceCode){
-    one.save('tmp/light.js', sourceCode, function(error){
-      kick({ module:require('./templates'), 'silent':1, 'name':'light build', 'target':'../tmp/light.js' },function(error,result){
-        if(error) return callback(error);
-        callback(result.fail ? new Error('Fail') : undefined);
-      });
-    });
-  });
-}
-
-function test_node_build(callback){
-  one.build({ 'manifestPath':'test/example-project/package.json', 'node':true }, function(error, sourceCode){
-    one.save('tmp/node.js', sourceCode, function(error){
-      kick({ module:require('./templates'), 'silent':1, 'name':'node build', 'node':true, 'target':'../tmp/node.js' }, function(error,result){
+    if(error) return callback(error);
+    one.save('tmp/built.js', sourceCode, function(error){
+      if(error) return callback(error);
+      kick({ module:require('./templates'), 'silent':0, 'name':'built file', 'target':'../tmp/built.js' },function(error,result){
         if(error) return callback(error);
         callback(result.fail ? new Error('Fail') : undefined);
       });
@@ -146,10 +137,14 @@ function test_filterFilename(callback){
 
 function test_loadModule(callback){
   one.loadModule('test/example-project/lib/a.js', function(error, module){
-    assert.equal(module.name, 'a');
-    assert.equal(module.filename, 'test/example-project/lib/a.js');
-    assert.equal(module.content, 'require(\'dependency\');\n\nexports.a = true;\n');
-    callback();
+    try {
+      assert.equal(module.name, 'a');
+      assert.equal(module.filename, 'test/example-project/lib/a.js');
+      assert.equal(module.content.substring(0,22), 'require(\'dependency\');');
+      callback();
+    } catch(err){
+      callback(err);
+    }
   });
 }
 
@@ -232,8 +227,7 @@ function test_flattenPkgTree(callback){
 
 module.exports = {
   'init':init,
-  'test_light_build':test_light_build,
-  'test_node_build':test_node_build,
+  'test_build':test_build,
   'test_collectDeps':test_collectDeps,
   'test_collectModules':test_collectModules,
   'test_filterFilename':test_filterFilename,
