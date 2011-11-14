@@ -8,7 +8,7 @@ var REV = '1.1.0';
 
 var opt = require('optimist'),
     argv = opt
-    .usage('Usage: $0 [OPTIONS]... [MANIFEST]')
+    .usage('Usage: $0 [ACTION] [MANIFEST] [OPTIONS]')
     .options('quiet',{
       'describe':'Make console output less verbose'
     })
@@ -24,10 +24,10 @@ var opt = require('optimist'),
     .argv;
 
 function build(){
-  var manifest = argv._[1],
+  var manifest = argv._[1] || 'package.json',
       target = argv._[2];
 
-  one.build({ 'manifestPath':manifest || 'package.json' }, function(error, pkg){
+  one.build({ 'manifestPath':manifest }, function(error, pkg){
     if(error) throw error;
     if(target){
       one.save(target, pkg, function(error){
@@ -45,8 +45,16 @@ function help(){
   process.exit(0);
 }
 
+function server(){
+  var manifest = argv._[1] || 'package.json',
+      host = argv._[3] || '127.0.0.1',
+      port = argv._[2] || 1338;
+
+  one.publish({ 'manifestPath':manifest, 'host':host, 'port':port });
+}
+
 function verbosity(){
-  one.verbose(false);
+  one.verbosity('INFO');
   argv.quiet && one.quiet(true);
   argv.verbose && one.verbose(true);
 }
@@ -58,10 +66,12 @@ function version(){
 
 var action = argv._[0];
 
+verbosity();
+
 switch(action){
   case 'build': build(); break;
-  case 'publish': publish(); break;
-  case: 'require': require(); break;
+  case 'server': server(); break;
+  case 'require': require(); break;
   default:
     if(argv.version){
       version();

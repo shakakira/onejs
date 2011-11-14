@@ -86,6 +86,9 @@ function test_process(mod, callback){
   assert.equal(typeof proc.Stream, 'function');
   assert.equal(typeof proc.Buffer, 'function');
 
+  assert.equal(proc.binding('buffer').Buffer, proc.Buffer);
+  assert.equal(proc.binding('buffer').SlowBuffer, proc.Buffer);
+
   assert.equal(proc.argv.length, 2);
   assert.equal(proc.argv[0], 'node');
   assert.equal(proc.argv[1], 'one.js');

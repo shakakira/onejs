@@ -1,4 +1,4 @@
-lib = (function(){
+lib = (function(exports){
   
   exports.path = (function(exports){ 
     {{>path}}
@@ -14,4 +14,4 @@ lib = (function(){
 
   return exports;
 
-})();
+})({});
