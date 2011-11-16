@@ -4,5 +4,5 @@ files that can be run on the platforms with no CommonJS support, such as web bro
 Usage
 =====
 ```bash
-$ onejs package.json -t built.js
+$ onejs build package.json target.js
 ```
