@@ -1,5 +1,6 @@
 var one = require('../lib/one'),
     templating = require('../lib/templating'),
+    render = require('../lib/render'),
     assert = require('assert'),
     fs = require('fs'),
     kick = require('highkick');
@@ -213,7 +214,7 @@ function test_flattenPkgTree(callback){
         ]
       };
 
-  var flat = one.flattenPkgTree(tree);
+  var flat = render.flattenPkgTree(tree);
   assert.equal(flat.length, 9);
 
   var i = 9;
