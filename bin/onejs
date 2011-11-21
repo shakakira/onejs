@@ -53,6 +53,14 @@ function server(){
   one.publish({ 'manifestPath':manifest, 'host':host, 'port':port });
 }
 
+function setupNodeDeps(){
+  var modules = argv._.slice(1);
+  modules.push(function(error){
+    if(error) throw error;
+  });
+  one.setupNodeModules.apply(undefined, modules);
+}
+
 function verbosity(){
   one.verbosity('INFO');
   argv.quiet && one.quiet(true);
@@ -71,7 +79,7 @@ verbosity();
 switch(action){
   case 'build': build(); break;
   case 'server': server(); break;
-  case 'require': require(); break;
+  case 'install': setupNodeDeps(); break;
   default:
     if(argv.version){
       version();
