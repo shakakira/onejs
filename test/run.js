@@ -1,6 +1,20 @@
 var kick = require('highkick'),
-    puts = require('sys').puts;
+    mkdir  = require('fs').mkdir;
 
-kick({ module:require('./tests'), name:'      main' }, function(error, result){
-  if(error) throw error;
-});
+function clean(callback){
+  mkdir('tmp', 0755, function(){
+    callback();
+  });
+}
+
+function run(){
+  clean(function(){
+
+    kick({ module:require('./main'), name:'      main' }, function(error, result){
+      if(error) throw error;
+    });
+
+  });
+}
+
+run();

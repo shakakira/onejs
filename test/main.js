@@ -1,9 +1,14 @@
-var one = require('../lib/one'),
-    templating = require('../lib/templating'),
-    render = require('../lib/render'),
-    assert = require('assert'),
-    fs = require('fs'),
-    kick = require('highkick');
+var one               = require('../lib/one'),
+    templating        = require('../lib/templating'),
+    render            = require('../lib/render'),
+
+    assert            = require('assert'),
+    fs                = require('fs'),
+    kick              = require('highkick'),
+
+    common            = require('./common'),
+    moduleFilenames   = common.moduleFilenames,
+    verifyListContent = common.verifyListContent;
 
 one.quiet(true);
 
@@ -11,11 +16,6 @@ function init(options, callback){
   callback();
 }
 
-function verifyListContent(a,b){
-  return a.length == b.length && a.every(function(el){
-    return b.indexOf(el) > -1;
-  });
-}
 
 function test_verifyListContent(callback){
   assert.ok(verifyListContent([3,1,4],[4,3,1]));
@@ -32,7 +32,7 @@ function test_build(callback){
       if(error) return callback(error);
       kick({ module:require('./templates'), 'silent':0, 'name':'built file', 'target':'../tmp/built.js' },function(error,result){
         if(error) return callback(error);
-        callback(result.fail ? new Error('Fail') : undefined);
+        callback(result.fail ? new Error('Build tests failed') : undefined);
       });
     });
   });
@@ -75,50 +75,50 @@ function test_loadPkg(callback){
   one.loadPkg('test/example-project/package.json', undefined, { id:templating.idGenerator(), 'azer':1 }, function(error, pkg){
     if(error) return callback(error);
 
-    assert.equal(pkg.id, 1);
-    assert.equal(pkg.name, 'example-project');
-    assert.equal(pkg.manifest.name, 'example-project');
-    assert.equal(pkg.dependencies.length, 2);
-    assert.equal(pkg.main.filename, 'a.js');
+    var pkgDict, filenames;
 
-    var pkgDict = Object.keys(pkg.pkgDict);
-    assert.equal(pkgDict.length, 4);
-    assert.equal(pkgDict[0], 'example-project');
-    assert.equal(pkgDict[1], 'dependency');
-    assert.equal(pkgDict[2], 'subdependency');
-    assert.equal(pkgDict[3], 'sibling');
+    try {
+      assert.equal(pkg.id, 1);
+      assert.equal(pkg.name, 'example-project');
+      assert.equal(pkg.manifest.name, 'example-project');
+      assert.equal(pkg.dependencies.length, 2);
+      assert.equal(pkg.main.filename, 'a.js');
 
-    assert.equal(pkg.modules.length, 2);
-    assert.equal(pkg.modules[0].filename, 'a.js');
-    assert.equal(pkg.modules[1].filename, 'b.js');
+      pkgDict = Object.keys(pkg.pkgDict);
+      assert.equal(pkgDict.length, 4);
+      assert.equal(pkgDict[0], 'example-project');
+      assert.equal(pkgDict[1], 'dependency');
+      assert.equal(pkgDict[2], 'subdependency');
+      assert.equal(pkgDict[3], 'sibling');
 
-    assert.equal(pkg.pkgDict.dependency.modules.length, 2);
-    verifyListContent(['f.js','g.js'],pkg.pkgDict.dependency.modules);
 
-    assert.equal(pkg.pkgDict.subdependency.modules.length, 2);
-    assert.equal(pkg.pkgDict.subdependency.modules[0].filename, 'i.js');
-    assert.equal(pkg.pkgDict.subdependency.modules[1].filename, 'j.js');
+      assert.ok(verifyListContent( moduleFilenames(pkg.modules), ['a.js', 'b.js']));
 
-    assert.equal(pkg.pkgDict.sibling.modules.length, 3);
-    assert.equal(pkg.pkgDict.sibling.modules[0].filename, 'p/r.js');
-    assert.equal(pkg.pkgDict.sibling.modules[2].filename, 's/t.js');
-    assert.equal(pkg.pkgDict.sibling.modules[1].filename, 'n.js');
-    callback();
+
+      assert.ok(verifyListContent( moduleFilenames(pkg.pkgDict.dependency.modules), ['f.js','g.js']));
+
+      assert.ok(verifyListContent( moduleFilenames(pkg.pkgDict.subdependency.modules ), ['i.js', 'j.js']));
+
+      assert.ok(verifyListContent( moduleFilenames(pkg.pkgDict.sibling.modules), ['p/r.js', 's/t.js', 'n.js']));
+
+      callback();
+    } catch(err){
+      callback(err);
+    }
   });
 }
 
 function test_collectModules(callback){
   one.collectModules({ 'name':'example-project', 'dirs':{'lib':'lib'}, 'wd':'test/example-project/' }, function(error, modules){
     try {
-      assert.equal(modules.length, 2);
-      assert.equal(modules[0].filename, 'a.js');
-      assert.equal(modules[1].filename, 'b.js');
+      assert.ok(verifyListContent(moduleFilenames(modules), ['a.js', 'b.js']));
       callback();
     } catch(exc) {
       callback(exc);
     }
   });
 }
+
 
 function test_filterFilename(callback){
 
