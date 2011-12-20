@@ -1,5 +1,4 @@
 var assert            = require('assert'),
-
     common            = require('./common'),
     verifyListContent = common.verifyListContent;
 
@@ -44,7 +43,7 @@ function test_packageTree(mod, callback){
 }
 
 function test_moduleTree(mod, callback){
-  assert.ok( verifyListContent(moduleIds(mod.map[1].modules), ['a', 'b'] ) );
+  assert.ok( verifyListContent(moduleIds(mod.map[1].modules), ['a', 'b', 'web'] ) );
   assert.ok( verifyListContent(moduleIds(mod.map[3].modules), ['i', 'j'] ) );
   callback();
 }
@@ -58,7 +57,7 @@ function test_packageCtx(mod, callback){
   assert.equal(p.mainModuleId, 'a');
   assert.equal(p.main.id, 'a');
 
-  assert.ok( verifyListContent(moduleIds(p.modules), ['a', 'b']) );
+  assert.ok( verifyListContent(moduleIds(p.modules), ['a', 'b', 'web']) );
 
   assert.equal(p.dependencies.length, 2);
 
@@ -66,11 +65,25 @@ function test_packageCtx(mod, callback){
 }
 
 function test_moduleCtx(mod, callback){
-  var a, b;
+  var pkg = mod.map[1], 
+      a, b, web;
 
-  a = mod.map[1].modules[0];
+  assert.equal(pkg.modules.length, 3);
 
-  a.id == 'b' && ( a = mod.map[1].modules[1] );
+  var i = pkg.modules.length;
+  while(i-->0){
+    switch(pkg.modules[i].id){
+      case 'a':
+        a = pkg.modules[i];
+        break;
+      case 'b':
+        b = pkg.modules[i];
+        break;
+      case 'web':
+        web = pkg.modules[i];
+        break;
+    }
+  }
 
   assert.equal(a.id, 'a');
   assert.equal(a.pkg.name, 'example-project');
@@ -78,13 +91,13 @@ function test_moduleCtx(mod, callback){
   assert.ok(a.require('dependency').f);
   assert.ok(a.require('./b').b);
 
-  b = mod.map.main.dependencies[ mod.map.main.dependencies[0].name == 'sibling' ? 0 :1 ].main;
+  var n = mod.map.main.dependencies[ mod.map.main.dependencies[0].name == 'sibling' ? 0 :1 ].main;
 
-  assert.equal(b.id, 'n');
-  assert.equal(b.pkg.name, 'sibling');
-  assert.equal(typeof b.wrapper, 'function');
-  assert.ok(b.require('dependency').f);
-  assert.ok(b.require('./p/r').r);
+  assert.equal(n.id, 'n');
+  assert.equal(n.pkg.name, 'sibling');
+  assert.equal(typeof n.wrapper, 'function');
+  assert.ok(n.require('dependency').f);
+  assert.ok(n.require('./p/r').r);
 
   callback();
 }
