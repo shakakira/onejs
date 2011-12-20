@@ -21,18 +21,20 @@ global.Buffer = exports.Buffer = Buffer;
 function Stream(writable, readable){
   if (!(this instanceof Stream)) return new Stream(writable, readable);
 
+  Buffer.call(this);
+
   this.emulation = true;
   this.readable = readable;
   this.writable = writable;
   this.type = 'file';
 };
 
-Stream.prototype = exports.Buffer(0,0);
+Stream.prototype = Buffer(0,0);
 
 exports.Stream = Stream;
 
 function notImplemented(){
-  console.warn('Not Implemented.');
+  throw new Error('Not Implemented.');
 }
 
 exports.binding = (function(){
@@ -51,7 +53,7 @@ exports.binding = (function(){
 
 })();
 
-exports.argv = ['node','one.js'];
+exports.argv = ['node'];
 
 exports.env = {};
 

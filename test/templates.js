@@ -9,13 +9,7 @@ function moduleIds(modules){
 }
 
 function init(options, callback){
-
   callback(null, require(options.target));
-}
-
-function test_name(mod, callback){
-  assert.equal(mod.name, 'exampleProject');
-  callback();
 }
 
 function test_findPkg(mod, callback){
@@ -34,33 +28,27 @@ function test_findModule(mod, callback){
   callback();
 }
 
-function test_packageTree(mod, callback){
-  assert.equal(mod.map.main.dependencies.length, 2);
-  assert.equal(mod.map.main.dependencies[0].name, 'dependency');
-  assert.equal(mod.map.main.dependencies[1].name, 'sibling');
-  assert.equal(mod.map.main.dependencies[0].dependencies[0].name, 'subdependency');
+function test_globals(mod, callback){
+  var globals = mod.require('./a');
+  assert.equal(typeof globals.Buffer, 'function');
+  assert.ok(globals.process);
+  assert.ok(globals.process.env);
+  callback();
+}
+
+function test_name(mod, callback){
+  assert.equal(mod.name, 'exampleProject');
+  callback();
+}
+
+function test_main(mod, callback){
+  assert.equal(mod.main, mod.map.main.main.call);
   callback();
 }
 
 function test_moduleTree(mod, callback){
   assert.ok( verifyListContent(moduleIds(mod.map[1].modules), ['a', 'b', 'web'] ) );
   assert.ok( verifyListContent(moduleIds(mod.map[3].modules), ['i', 'j'] ) );
-  callback();
-}
-
-function test_packageCtx(mod, callback){
-
-  var p = mod.map[1];
-  assert.equal(p.name, 'example-project');
-  assert.equal(p.id, 1);
-  assert.equal(p.parent);
-  assert.equal(p.mainModuleId, 'a');
-  assert.equal(p.main.id, 'a');
-
-  assert.ok( verifyListContent(moduleIds(p.modules), ['a', 'b', 'web']) );
-
-  assert.equal(p.dependencies.length, 2);
-
   callback();
 }
 
@@ -102,8 +90,36 @@ function test_moduleCtx(mod, callback){
   callback();
 }
 
-function test_main(mod, callback){
-  assert.equal(mod.main, mod.map.main.main.call);
+function test_packageCtx(mod, callback){
+  assert.ok(mod.require);
+  assert.equal(mod.name, 'exampleProject');
+
+  assert.equal(typeof mod.stderr(), 'string');
+  assert.equal(typeof mod.stdin(), 'string');
+  assert.equal(typeof mod.stdout(), 'string');
+  assert.equal(mod.stdout(), mod.lib.process.stdout.content);
+  assert.equal(mod.stdin(), mod.lib.process.stdin.content);
+  assert.equal(mod.stderr(), mod.lib.process.stderr.content);
+
+  var p = mod.map[1];
+  assert.equal(p.name, 'example-project');
+  assert.equal(p.id, 1);
+  assert.equal(p.parent);
+  assert.equal(p.mainModuleId, 'a');
+  assert.equal(p.main.id, 'a');
+
+  assert.ok( verifyListContent(moduleIds(p.modules), ['a', 'b', 'web']) );
+
+  assert.equal(p.dependencies.length, 2);
+
+  callback();
+}
+
+function test_packageTree(mod, callback){
+  assert.equal(mod.map.main.dependencies.length, 2);
+  assert.equal(mod.map.main.dependencies[0].name, 'dependency');
+  assert.equal(mod.map.main.dependencies[1].name, 'sibling');
+  assert.equal(mod.map.main.dependencies[0].dependencies[0].name, 'subdependency');
   callback();
 }
 
@@ -117,9 +133,7 @@ function test_process(mod, callback){
   assert.equal(proc.binding('buffer').Buffer, proc.Buffer);
   assert.equal(proc.binding('buffer').SlowBuffer, proc.Buffer);
 
-  assert.equal(proc.argv.length, 2);
   assert.equal(proc.argv[0], 'node');
-  assert.equal(proc.argv[1], 'one.js');
 
   assert.ok(proc.env);
 
@@ -133,6 +147,10 @@ function test_process(mod, callback){
 
   assert.ok(proc.pid == proc.uptime);
   assert.ok(proc.arch == proc.execPath == proc.installPrefix == proc.platform == proc.title == '');
+
+  proc.stdout.write('hello');
+  proc.stdout.write(' world');
+  assert.equal(proc.stdout.content, 'hello world');
 
   var isNextTickAsync = false;
   proc.nextTick(function(){
@@ -150,13 +168,6 @@ function test_require(mod, callback){
   callback();
 }
 
-function test_globals(mod, callback){
-  var globals = mod.require('./a');
-  assert.equal(typeof globals.Buffer, 'function');
-  assert.ok(globals.process);
-  assert.ok(globals.process.env);
-  callback();
-}
 
 module.exports = {
   'init':init,

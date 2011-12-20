@@ -1,27 +1,34 @@
 #!/usr/bin/env node
 
 var one = require('../lib/one'),
-    puts = require('sys').puts,
+    puts = require('util').puts,
     buildOptions = {};
 
 var REV = '1.1.0';
 
 var opt = require('optimist'),
     argv = opt
-    .usage('Usage: $0 [ACTION] [MANIFEST] [OPTIONS]')
-    .options('quiet',{
-      'describe':'Make console output less verbose'
-    })
-    .options('verbose',{
-      'describe':'Tell what\'s going on by being verbose.'
-    })
-    .options('version',{
-      'describe':'Show version and exit'
-    })
-    .options('help',{
-      'describe':'Show help.'
-    })
+    .options('quiet', {})
+    .options('verbose', {})
+    .options('version', {})
+    .options('help', {})
     .argv;
+
+var HELP = ['usage: onejs [action] [manifest] [options]'
+          , ''
+          , 'Transforms NodeJS packages into single, stand-alone JavaScript files that can be run at other platforms.'
+          , ''
+          , 'actions:'
+          , '  build      <manifest> <target>         Generate a stand-alone JavaScript file from specified package. Write output to <target> if given any.'
+          , '  install    [modules]                   Package specified NodeJS core modules and locate them in node_modules/ directory. Example Usage: onejs install assert util.'
+          , '  server     <manifest> <port> <host>    Publish generated JavaScript file on web. Uses 127.0.0.1:1338 by default.'
+          , ''
+          , 'options:'
+          , '  --quiet      Make console output less verbose.'
+          , '  --verbose    Tell what\'s going on by being verbose.'
+          , '  --version    Show version and exit.'
+          , '  --help       Show help.'
+          , ''].join('\n');
 
 function build(){
   var manifest = argv._[1] || 'package.json',
@@ -41,7 +48,7 @@ function build(){
 }
 
 function help(){
-  opt.showHelp(puts);
+  puts(HELP);
   process.exit(0);
 }
 
@@ -58,6 +65,7 @@ function setupNodeDeps(){
   modules.push(function(error){
     if(error) throw error;
   });
+
   one.setupNodeModules.apply(undefined, modules);
 }
 
@@ -87,4 +95,3 @@ switch(action){
       help();
     }
 }
-
