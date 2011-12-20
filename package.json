@@ -17,5 +17,8 @@
     "highkick":"1.x",
     "log4js":"0.x",
     "genpkg":"0.x"
+  },
+  "scripts":{
+    "test":"node test/run.js"
   }
 }
