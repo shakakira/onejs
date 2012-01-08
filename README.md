@@ -2,16 +2,16 @@ OneJS is a command-line utility for converting CommonJS packages to single, stan
 files that can be run on other JavaScript platforms such as web browsers, unity, silkjs etc.
 
 # Motivation
-* **Reusability** OneJS aims to let developers use JavaScript code on all environments that is able to execute JavaScript properly.
-* **Elegant Modularization** OneJS lets web projects benefit from CommonJS, which is an excellent proposal that gives us a reusable, very well designed way to structure our source code.
-* **NPM** OneJS lets web projects use NPM. It's a great tool that makes maintaining dependencies much easier!
-* **No Sphagetti Code** No awkward headers, no framework specific module definitions that will be deprecated. 
-* **Reliable code generation** OneJS doesn't change the source code. It only generates a container environment that behaves like NodeJS.
-* **Unobtrusive Code** The source code OneJS generates wraps projects into a single JS object that takes the project name defined in package.json. 
+* **Reusability** OneJS aims to let developers run NodeJS modules and packages on all environments able to execute JavaScript.
+* **Elegant Modularization** OneJS lets web projects benefit from CommonJS, an excellent proposal that gives us a very well designed way to structure JavaScript source codes.
+* **NPM** It eventually makes it possible for web projects to use NPM. Which is a great tool that makes controlling dependencies even fun!
+* **No Sphagetti Code** No awkward headers, no framework specific definitions which becames deprecated in a few years.
+* **Reliable code generation** OneJS doesn't change your source code. It only generates a container environment that simply emulates NodeJS environment.
+* **Unobtrusive Code** The source code OneJS generates wraps projects into a single, isolated JS object.
 
 ### Examples
 * See the example project included in this repository
-* See MultiplayerChess.com's source code. Even though it uses an old tool that I stopped developing, it's coded in the CommonJS pattern.
+* See MultiplayerChess.com's source code. 
 
 # Install
 ```bash
