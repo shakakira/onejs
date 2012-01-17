@@ -27,7 +27,9 @@ It's an easy way to give OneJS a test-drive. Example project is located at this 
 
 ```bash
 $ git clone git@github.com:azer/onejs.git
-$ cd onejs/example-project
+$ cd onejs
+$ npm install
+$ cd example-project
 ```
 
 It's a non-functional NodeJS project with some dummy dependencies under node_modules directory. The built file will contain all the packages under node_modules directory;
