@@ -67,7 +67,7 @@ exports.stdout = Stream(true, false);
 
 exports.version = '{{ node_version }}';
 
-exports.versions = {{ versions }};
+exports.versions = {{{ versions }}};
 
 /**
  * void definitions
