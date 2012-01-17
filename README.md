@@ -40,6 +40,9 @@ $ ../bin/onejs build package.json bundle.js
 
 Now we're willing to test the code OneJS generated for us. Quickest way might be requiring it from NodeJS;
 ```
+> var exampleProject = require('./bundle');
+> exampleProject.main() // calls main module of the package, returns its exports
+> exampleProject.require('./b') // each package object has a require method available for external calls
 ```
 
 To test it on web browsers, OneJS has a "server" command that builds the source code and start serving it at localhost:1338.
