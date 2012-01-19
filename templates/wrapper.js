@@ -95,6 +95,18 @@ var {{ name }} = (function(global, undefined){
   function require(uri){
     return pkgmap.main.main.require(uri);
   }
+  
+  function stderr(){
+    return lib.process.stderr.content;
+  }
+  
+  function stdin(){
+    return lib.process.stdin.content;
+  }
+
+  function stdout(){
+    return lib.process.stdout.content;
+  }
 
   return (locals = {
     'lib':lib,
@@ -104,6 +116,9 @@ var {{ name }} = (function(global, undefined){
     'map':pkgmap,
     'module':module,
     'pkg':pkg,
+    'stderr':stderr,
+    'stdin':stdin,
+    'stdout':stdout,
     'require':require
   });
 

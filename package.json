@@ -19,6 +19,6 @@
     "genpkg":"0.x"
   },
   "scripts":{
-    "test": "node test/run.js"
+    "test":"node test/run.js"
   }
 }

@@ -26,7 +26,7 @@ function test_verifyListContent(callback){
 }
 
 function test_build(callback){
-  one.build({ 'manifestPath':'test/example-project/package.json' }, function(error, sourceCode){
+  one.build({ 'manifestPath':'example-project/package.json' }, function(error, sourceCode){
     if(error) return callback(error);
     one.save('tmp/built.js', sourceCode, function(error){
       if(error) return callback(error);
@@ -47,7 +47,7 @@ function test_collectDeps(callback){
         'sibling':'*'
       }
     },
-    'wd':'test/example-project/',
+    'wd':'example-project/',
     'pkgDict':{}
   };
 
@@ -72,7 +72,7 @@ function test_id(callback){
 }
 
 function test_loadPkg(callback){
-  one.loadPkg('test/example-project/package.json', undefined, { id:templating.idGenerator(), 'azer':1 }, function(error, pkg){
+  one.loadPkg('example-project/package.json', undefined, { id:templating.idGenerator(), 'azer':1 }, function(error, pkg){
     if(error) return callback(error);
 
     var pkgDict, filenames;
@@ -85,14 +85,14 @@ function test_loadPkg(callback){
       assert.equal(pkg.main.filename, 'a.js');
 
       pkgDict = Object.keys(pkg.pkgDict);
+
       assert.equal(pkgDict.length, 4);
       assert.equal(pkgDict[0], 'example-project');
       assert.equal(pkgDict[1], 'dependency');
       assert.equal(pkgDict[2], 'subdependency');
       assert.equal(pkgDict[3], 'sibling');
 
-
-      assert.ok(verifyListContent( moduleFilenames(pkg.modules), ['a.js', 'b.js']));
+      assert.ok(verifyListContent( moduleFilenames(pkg.modules), ['web.js', 'a.js', 'b.js']));
 
 
       assert.ok(verifyListContent( moduleFilenames(pkg.pkgDict.dependency.modules), ['f.js','g.js']));
@@ -109,9 +109,9 @@ function test_loadPkg(callback){
 }
 
 function test_collectModules(callback){
-  one.collectModules({ 'name':'example-project', 'dirs':{'lib':'lib'}, 'wd':'test/example-project/' }, function(error, modules){
+  one.collectModules({ 'name':'example-project', 'dirs':{'lib':'lib'}, 'wd':'example-project/' }, function(error, modules){
     try {
-      assert.ok(verifyListContent(moduleFilenames(modules), ['a.js', 'b.js']));
+      assert.ok(verifyListContent(moduleFilenames(modules), ['a.js', 'b.js','web.js']));
       callback();
     } catch(exc) {
       callback(exc);
@@ -137,10 +137,10 @@ function test_filterFilename(callback){
 }
 
 function test_loadModule(callback){
-  one.loadModule('test/example-project/lib/a.js', function(error, module){
+  one.loadModule('example-project/lib/a.js', function(error, module){
     try {
       assert.equal(module.name, 'a');
-      assert.equal(module.filename, 'test/example-project/lib/a.js');
+      assert.equal(module.filename, 'example-project/lib/a.js');
       assert.equal(module.content.substring(0,22), 'require(\'dependency\');');
       callback();
     } catch(err){
@@ -176,7 +176,7 @@ function test_makeVariableName(callback){
 }
 
 function test_loadManifest(callback){
-  one.loadManifest('test/example-project/package.json', function(error, manifest){
+  one.loadManifest('example-project/package.json', function(error, manifest){
     assert.equal(manifest.name, "example-project");
     assert.equal(manifest.main, "./lib/a");
     assert.equal(manifest.directories.lib, "./lib");
