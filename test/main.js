@@ -30,7 +30,7 @@ function test_build(callback){
     if(error) return callback(error);
     one.save('tmp/built.js', sourceCode, function(error){
       if(error) return callback(error);
-      kick({ module:require('./templates'), 'silent':0, 'name':'built file', 'target':'../tmp/built.js' },function(error,result){
+      kick({ module:require('./templates'), 'silent': true, 'name':'built file', 'target':'../tmp/built.js' },function(error,result){
         if(error) return callback(error);
         callback(result.fail ? new Error('Build tests failed') : undefined);
       });
