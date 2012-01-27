@@ -72,7 +72,7 @@ function test_id(callback){
 }
 
 function test_loadPkg(callback){
-  one.loadPkg('example-project/package.json', undefined, { id:templating.idGenerator(), 'azer':1 }, function(error, pkg){
+  one.loadPkgFromManifestPath('example-project/package.json', undefined, { id:templating.idGenerator(), 'azer':1 }, function(error, pkg){
     if(error) return callback(error);
 
     var pkgDict, filenames;
