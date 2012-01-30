@@ -43,11 +43,16 @@ var {{ name }} = (function(global, undefined){
 
   function genRequire(callingModule){
     return function require(uri){
-      var module;
+      var module,
+          pkg;
 
       if(/^\./.test(uri)){
         module = findModule(callingModule, uri); 
       } else {
+        pkg = findPkg(callingModule.pkg, uri);
+
+        if(!pkg) throw new Error('Cannot find module "'+uri+'"');
+
         module = findPkg(callingModule.pkg, uri).main;
       }
 
