@@ -33,6 +33,7 @@ var {{ name }} = (function(global, undefined){
 
     var i = pkg.modules.length,
         id;
+
     while(i-->0){
       id = pkg.modules[i].id;
       if(id==moduleId || id == moduleIndexId){
