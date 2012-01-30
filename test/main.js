@@ -30,7 +30,7 @@ function test_build(callback){
     if(error) return callback(error);
     one.save('tmp/built.js', sourceCode, function(error){
       if(error) return callback(error);
-      kick({ module:require('./templates'), 'silent': true, 'name':'built file', 'target':'../tmp/built.js' },function(error,result){
+      kick({ module:require('./build'), 'silent': true, 'name':'built file', 'target':'../tmp/built.js' },function(error,result){
         if(error) return callback(error);
         callback(result.fail ? new Error('Build tests failed') : undefined);
       });
@@ -97,7 +97,7 @@ function test_loadPkg(callback){
 
       assert.ok(verifyListContent( moduleFilenames(pkg.pkgDict.dependency.modules), ['f.js','g.js']));
 
-      assert.ok(verifyListContent( moduleFilenames(pkg.pkgDict.subdependency.modules ), ['i.js', 'j.js']));
+      assert.ok(verifyListContent( moduleFilenames(pkg.pkgDict.subdependency.modules ), ['i.js']));
 
       assert.ok(verifyListContent( moduleFilenames(pkg.pkgDict.sibling.modules), ['p/r.js', 's/t.js', 'n.js']));
 
@@ -110,13 +110,20 @@ function test_loadPkg(callback){
 
 function test_collectModules(callback){
   one.collectModules({ 'name':'example-project', 'dirs':{'lib':'lib'}, 'wd':'example-project/' }, function(error, modules){
-    try {
-      assert.ok(verifyListContent(moduleFilenames(modules), ['a.js', 'b.js','web.js']));
+    assert.ok(verifyListContent(moduleFilenames(modules), ['a.js', 'b.js','web.js']));
+    
+    one.collectModules({ 'name': 'subdependency', 'manifest':{ 'main':'i' }, 'wd':'example-project/node_modules/dependency/node_modules/subdependency/' }, function(error, modules){
+      if(error){
+        callback(error);
+        return;
+      }
+
+      assert.ok(verifyListContent(moduleFilenames(modules), ['i.js']));
       callback();
-    } catch(exc) {
-      callback(exc);
-    }
+    });
+
   });
+
 }
 
 

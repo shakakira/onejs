@@ -48,7 +48,7 @@ function test_main(mod, callback){
 
 function test_moduleTree(mod, callback){
   assert.ok( verifyListContent(moduleIds(mod.map[1].modules), ['a', 'b', 'web'] ) );
-  assert.ok( verifyListContent(moduleIds(mod.map[3].modules), ['i', 'j'] ) );
+  assert.ok( verifyListContent(moduleIds(mod.map[3].modules), ['i'] ) );
   callback();
 }
 
