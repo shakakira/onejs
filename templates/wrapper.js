@@ -28,11 +28,14 @@ var {{ name }} = (function(global, undefined){
   function findModule(workingModule, uri){
     var module = undefined,
         moduleId = lib.path.join(lib.path.dirname(workingModule.id), uri),
+        moduleIndexId = lib.path.join(moduleId, 'index'),
         pkg = workingModule.pkg;
 
-    var i = pkg.modules.length;
+    var i = pkg.modules.length,
+        id;
     while(i-->0){
-      if(pkg.modules[i].id==moduleId){
+      id = pkg.modules[i].id;
+      if(id==moduleId || id == moduleIndexId){
         module = pkg.modules[i];
         break;
       }

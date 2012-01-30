@@ -30,7 +30,7 @@ function test_build(callback){
     if(error) return callback(error);
     one.save('tmp/built.js', sourceCode, function(error){
       if(error) return callback(error);
-      kick({ module:require('./build'), 'silent': true, 'name':'built file', 'target':'../tmp/built.js' },function(error,result){
+      kick({ module:require('./build'), 'silent': false, 'name':'built file', 'target':'../tmp/built.js' },function(error,result){
         if(error) return callback(error);
         callback(result.fail ? new Error('Build tests failed') : undefined);
       });
@@ -99,7 +99,7 @@ function test_loadPkg(callback){
 
       assert.ok(verifyListContent( moduleFilenames(pkg.pkgDict.subdependency.modules ), ['i.js']));
 
-      assert.ok(verifyListContent( moduleFilenames(pkg.pkgDict.sibling.modules), ['p/r.js', 's/t.js', 'n.js']));
+      assert.ok(verifyListContent( moduleFilenames(pkg.pkgDict.sibling.modules), ['p/index.js', 'p/r.js', 's/t.js', 'n.js']));
 
       callback();
     } catch(err){
