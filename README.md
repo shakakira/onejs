@@ -7,7 +7,7 @@ files that can be run on other JavaScript platforms such as web browsers, unity,
 * **NPM** It eventually makes it possible for web projects to use NPM. Which is a great tool that makes controlling dependencies even fun!
 * **No Spaghetti Code** No awkward headers, no framework-specific definitions which become deprecated in a few years.
 * **Reliable code generation** OneJS doesn't change your source code. It only generates a container environment that simply emulates NodeJS environment.
-* **Unobtrusive Code** The source code OneJS generates wraps projects into a single, isolated JS object.
+* **Unobtrusive Code** OneJS generates puts all content into an isolated JS object.
 
 ### Examples
 * See the example project included in this repository
