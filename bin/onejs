@@ -8,6 +8,7 @@ var REV = '1.1.0';
 
 var opt = require('optimist'),
     argv = opt
+    .options('noprocess', {})
     .options('quiet', {})
     .options('verbose', {})
     .options('version', {})
@@ -24,17 +25,18 @@ var HELP = ['usage: onejs [action] [manifest] [options]'
           , '  server     <manifest> <port> <host>    Publish generated JavaScript file on web. Uses 127.0.0.1:1338 by default.'
           , ''
           , 'options:'
-          , '  --quiet      Make console output less verbose.'
-          , '  --verbose    Tell what\'s going on by being verbose.'
-          , '  --version    Show version and exit.'
-          , '  --help       Show help.'
+          , '  --noprocess    Do not include process implementation.'
+          , '  --quiet        Make console output less verbose.'
+          , '  --verbose      Tell what\'s going on by being verbose.'
+          , '  --version      Show version and exit.'
+          , '  --help         Show help.'
           , ''].join('\n');
 
 function build(){
   var manifest = argv._[1] || 'package.json',
       target = argv._[2];
 
-  one.build({ 'manifestPath':manifest }, function(error, pkg){
+  one.build({ 'manifestPath':manifest, 'noprocess': argv.noprocess  }, function(error, pkg){
     if(error) throw error;
     if(target){
       one.save(target, pkg, function(error){

@@ -110,9 +110,16 @@ function test_loadPkg(callback){
 
 function test_collectModules(callback){
   one.collectModules({ 'name':'example-project', 'dirs':{'lib':'lib'}, 'wd':'example-project/' }, function(error, modules){
+
+    if(error){
+      callback(error);
+      return;
+    }
+
     assert.ok(verifyListContent(moduleFilenames(modules), ['a.js', 'b.js','web.js']));
     
     one.collectModules({ 'name': 'subdependency', 'manifest':{ 'main':'i' }, 'wd':'example-project/node_modules/dependency/node_modules/subdependency/' }, function(error, modules){
+
       if(error){
         callback(error);
         return;

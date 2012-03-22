@@ -63,7 +63,7 @@ var {{ name }} = (function(global, undefined){
       if(!module) throw new Error('Cannot find module "'+uri+'"');
 
       return module.call();
-    }
+    };
   }
 
   function module(parentId, wrapper){
