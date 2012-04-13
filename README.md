@@ -1,5 +1,5 @@
 OneJS is a command-line utility for converting CommonJS packages to single, stand-alone JavaScript
-files that can be run on other JavaScript platforms such as web browsers, unity, silkjs etc.
+files that can be run on web browsers.
 
 # Motivation
 * **Reusability** OneJS aims to let developers run NodeJS modules and packages on all environments able to execute JavaScript.
@@ -11,49 +11,53 @@ files that can be run on other JavaScript platforms such as web browsers, unity,
 
 ### Examples
 * See the example project included in this repository
-* See MultiplayerChess.com's source code. 
+* MultiplayerChess.com ([Source Code](https://github.com/azer/multiplayerchess.com/tree/master/frontend) - [Output](http://multiplayerchess.com/mpc.js) )
+* [boxcars](https://github.com/azer/boxcars)
 
 # Install
 ```bash
 $ npm install one
 ```
 
-* Tip: Pass -g parameter to install it globally. *
-
 # First Steps
 
-## Testing Example Project
-It's an easy way to give OneJS a test-drive. Example project is located at this repository;
+## Creating the Bundle Script
 
-```bash
-$ git clone git@github.com:azer/onejs.git
-$ cd onejs
-$ npm install
-$ cd example-project
-```
-
-It's a non-functional NodeJS project with some dummy dependencies under node_modules directory. The built file will contain all the packages under node_modules directory;
+OneJS walks the modules and dependencies defined by package.json files. To create your bundle, just go a project directory and type `onejs build` command:
 
 ```
-$ ../bin/onejs build package.json bundle.js
+$ onejs build package.json bundle.js
 ```
 
-Now we're willing to test the code OneJS generated for us. Quickest way might be requiring it from NodeJS;
+## Experimenting the Bundle Script
+
+The output OneJS generates can be used by NodeJS, too. It's the easiest way of making sure if the output works or not. 
+
 ```
 > var exampleProject = require('./bundle');
-> exampleProject.main() // calls main module of the package, returns its exports
+> exampleProject.main() // calls main module, returns its exports
 > exampleProject.require('./b') // each package object has a require method available for external calls
 ```
 
-To test it on web browsers, OneJS has a "server" command that builds the source code and start serving it at localhost:1338.
+In the case what you need is to try it in web browsers, onejs has a "server" option that'll publish the source code at `localhost:1338` let you debug the output with Firebug Lite easily;
 
-```bash
+```
 $ ../bin/onejs server example-project/package.json
 ```
 
-You can simply go to that URL and inspect the content of "exampleProject" object, using Firebug Lite. The whole source code with 
-dependencies (if exists) is wrapped by it. It also provides an external API for the possible clients, containing some methods 
-such as require, main, stdin, stdout, stderror. 
+## Using NodeJS Modules
+
+Many modules of the standard NodeJS library is able to be used by web projects, as well. OneJS has an 'install' command that converts demanded remote NodeJS module to a package on the fly:
+
+```javascript
+> onejs install assert path url
+```
+
+The reference of available modules that you can install: https://github.com/azer/onejs/blob/master/lib/install_dict.js
+
+## Process
+
+OneJS includes a simple emulation of [NodeJS' process](http://nodejs.org/api/process.html). (Pass --noprocess if you don't need it)
 
 ```javascript
 > exampleProject.require('dependency'), exampleProject.require('./b');
@@ -62,13 +66,8 @@ such as require, main, stdin, stdout, stderror.
 "Hello World"
 ```
 
-# Projects Using OneJS
+# Troubleshooting
 
-* [MultiplayerChess.com](http://github.com/azer/multiplayerchess.com)
-* [HighKick](http://github.com/azer/highkick)
-
-# Beginner's Guide
-FIXME
-
-# API Reference
-FIXME
+* The most common issue of a OneJS output is to lack some dependencies. In that case, make sure that the library is located under `node_modules/` properly.
+* Enabling verbose mode might be helpful: `onejs build package.json --verbose`
+* See the content of `projectName.map` object if it contains the missing dependency
