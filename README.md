@@ -9,6 +9,8 @@ files that can be run on web browsers.
 * **Reliable code generation** OneJS doesn't change your source code. It only generates a container environment that simply emulates NodeJS environment.
 * **Unobtrusive Code** OneJS generates puts all content into an isolated JS object.
 
+![](http://oi41.tinypic.com/aw2us3.jpg)
+
 ### Examples
 * See the example project included in this repository
 * MultiplayerChess.com ([Source Code](https://github.com/azer/multiplayerchess.com/tree/master/frontend) - [Output](http://multiplayerchess.com/mpc.js) )
