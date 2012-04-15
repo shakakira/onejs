@@ -27,18 +27,31 @@ function test_verifyListContent(callback){
 
 function test_build(callback){
   one.build({ 'manifestPath':'example-project/package.json' }, function(error, sourceCode){
-    if(error) return callback(error);
+    if(error) {
+      callback(error);
+      return;
+    }
+
     one.save('tmp/built.js', sourceCode, function(error){
-      if(error) return callback(error);
+      if(error) {
+        callback(error);
+        return;
+      }
+
       kick({ module:require('./build'), 'silent': false, 'name':'built file', 'target':'../tmp/built.js' },function(error,result){
-        if(error) return callback(error);
+
+        if(error) {
+          callback(error);
+          return;
+        }
+
         callback(result.fail ? new Error('Build tests failed') : undefined);
       });
     });
   });
 }
 
-function test_collectDeps(callback){
+function test_dependencies(callback){
   var pkg = {
     'name':'example-project',
     'manifest':{
@@ -51,7 +64,7 @@ function test_collectDeps(callback){
     'pkgDict':{}
   };
 
-  one.collectDeps(pkg, { id:templating.idGenerator() }, function(error, deps){
+  one.dependencies(pkg, { id:templating.idGenerator() }, function(error, deps){
     if(error) return callback(error);
     assert.equal(deps.length, 2);
     assert.equal(deps[0].name, 'dependency');
@@ -72,7 +85,7 @@ function test_id(callback){
 }
 
 function test_loadPkg(callback){
-  one.loadPkgFromManifestPath('example-project/package.json', undefined, { id:templating.idGenerator(), 'azer':1 }, function(error, pkg){
+  one.packages.loadFromManifestPath('example-project/package.json', undefined, { id:templating.idGenerator(), 'azer':1 }, function(error, pkg){
     if(error) return callback(error);
 
     var pkgDict, filenames;
@@ -108,8 +121,8 @@ function test_loadPkg(callback){
   });
 }
 
-function test_collectModules(callback){
-  one.collectModules({ 'name':'example-project', 'dirs':{'lib':'lib'}, 'wd':'example-project/' }, function(error, modules){
+function test_modules(callback){
+  one.modules({ 'name':'example-project', 'dirs':{'lib':'lib'}, 'wd':'example-project/' }, function(error, modules){
 
     if(error){
       callback(error);
@@ -118,7 +131,7 @@ function test_collectModules(callback){
 
     assert.ok(verifyListContent(moduleFilenames(modules), ['a.js', 'b.js','web.js']));
     
-    one.collectModules({ 'name': 'subdependency', 'manifest':{ 'main':'i' }, 'wd':'example-project/node_modules/dependency/node_modules/subdependency/' }, function(error, modules){
+    one.modules({ 'name': 'subdependency', 'manifest':{ 'main':'i' }, 'wd':'example-project/node_modules/dependency/node_modules/subdependency/' }, function(error, modules){
 
       if(error){
         callback(error);
@@ -140,18 +153,18 @@ function test_filterFilename(callback){
       illegalPaths = ['lib/foo','lib/qux.j'];
 
   for(var i = -1, len=legalPaths.length; ++i < len; ){
-    assert.ok(one.filterFilename(legalPaths[i]));
+    assert.ok(one.modules.filterFilename(legalPaths[i]));
   };
 
   for(var i = -1, len=illegalPaths.length; ++i < len; ){
-    assert.ok(!one.filterFilename(illegalPaths[i]));
+    assert.ok(!one.modules.filterFilename(illegalPaths[i]));
   };
 
   callback();
 }
 
 function test_loadModule(callback){
-  one.loadModule('example-project/lib/a.js', function(error, module){
+  one.modules.load('example-project/lib/a.js', function(error, module){
     try {
       assert.equal(module.name, 'a');
       assert.equal(module.filename, 'example-project/lib/a.js');
@@ -164,13 +177,13 @@ function test_loadModule(callback){
 }
 
 function test_moduleName(callback){
-  assert.equal(one.moduleName('foo.js'),'foo');
-  assert.equal(one.moduleName('foo/bar/qux.js'),'qux');
-  assert.equal(one.moduleName('foo'));
-  assert.equal(one.moduleName('foo/bar/qux'));
-  assert.equal(one.moduleName('foo.js/bar.js/qux'));
-  assert.equal(one.moduleName('foo.js/bar.js/qux.js.'));
-  assert.equal(one.moduleName('qux/quux/c-orge.js'),'c-orge');
+  assert.equal(one.modules.fixname('foo.js'),'foo');
+  assert.equal(one.modules.fixname('foo/bar/qux.js'),'qux');
+  assert.equal(one.modules.fixname('foo'));
+  assert.equal(one.modules.fixname('foo/bar/qux'));
+  assert.equal(one.modules.fixname('foo.js/bar.js/qux'));
+  assert.equal(one.modules.fixname('foo.js/bar.js/qux.js.'));
+  assert.equal(one.modules.fixname('qux/quux/c-orge.js'),'c-orge');
   callback();
 }
 
@@ -190,7 +203,7 @@ function test_makeVariableName(callback){
 }
 
 function test_loadManifest(callback){
-  one.loadManifest('example-project/package.json', function(error, manifest){
+  one.packages.manifest('example-project/package.json', function(error, manifest){
     assert.equal(manifest.name, "example-project");
     assert.equal(manifest.main, "./lib/a");
     assert.equal(manifest.directories.lib, "./lib");
@@ -243,8 +256,8 @@ function test_flattenPkgTree(callback){
 module.exports = {
   'init':init,
   'test_build':test_build,
-  'test_collectDeps':test_collectDeps,
-  'test_collectModules':test_collectModules,
+  'test_dependencies':test_dependencies,
+  'test_modules':test_modules,
   'test_filterFilename':test_filterFilename,
   'test_flattenPkgTree':test_flattenPkgTree,
   'test_id':test_id,

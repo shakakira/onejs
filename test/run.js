@@ -10,7 +10,7 @@ function clean(callback){
 function run(){
   clean(function(){
 
-    kick({ module:require('./main'), name:'      main' }, function(error, result){
+    kick({ module:require('./main'), name:'      main', 'ordered': true }, function(error, result){
       if(error) throw error;
     });
 
