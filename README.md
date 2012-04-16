@@ -47,7 +47,7 @@ In the case what you need is to try it in web browsers, onejs has a "server" opt
 $ ../bin/onejs server example-project/package.json
 ```
 
-## Using the NodeJS Standard Library
+## Using the NodeJS Core Library
 
 Many modules of the standard NodeJS library is able to be used by web projects, as well. OneJS has an 'install' command that converts demanded remote NodeJS module to a package on the fly:
 
