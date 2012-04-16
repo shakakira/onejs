@@ -2,12 +2,12 @@ OneJS is a command-line utility for converting CommonJS packages to single, stan
 files that can be run on web browsers.
 
 # Motivation
-* **Reusability** OneJS aims to let developers run NodeJS modules and packages on all environments able to execute JavaScript.
-* **Elegant Modularization** OneJS lets web projects benefit from CommonJS, an excellent proposal that gives us a very well designed way to structure JavaScript source codes.
-* **NPM** It eventually makes it possible for web projects to use NPM. Which is a great tool that makes controlling dependencies even fun!
-* **No Spaghetti Code** No awkward headers, no framework-specific definitions which become deprecated in a few years.
-* **Reliable code generation** OneJS doesn't change your source code. It only generates a container environment that simply emulates NodeJS environment.
-* **Unobtrusive Code** OneJS generates puts all content into an isolated JS object.
+* **Reusability** OneJS let coders use NodeJS libraries in client-side projects.
+* **Elegant Modularization** Modules and packages specs of CommonJS are what web apps exactly needs: a very well designed way to structure JavaScript code.
+* **NPM** OneJS moves the revolution of NPM one step forward and makes it available for client-side projects!
+* **No Spaghetti Code** No awkward headers, no framework-specific definitions.
+* **Reliable code generation** OneJS doesn't change your source code. It generates a container that emulates a simple NodeJS environment.
+* **Unobtrusive Code** OneJS puts all the content into an isolated JS object.
 
 ![](http://oi41.tinypic.com/aw2us3.jpg)
 
