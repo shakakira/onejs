@@ -49,7 +49,7 @@ $ ../bin/onejs server example-project/package.json
 
 ## Using the NodeJS Core Library
 
-Many modules of the standard NodeJS library is able to be used by web projects, as well. OneJS has an 'install' command that converts demanded remote NodeJS module to a package on the fly:
+Many modules of the core NodeJS library is able to be used by web projects, as well. OneJS has an 'install' command that converts demanded remote NodeJS module to a package on the fly:
 
 ```javascript
 > onejs install assert path url
