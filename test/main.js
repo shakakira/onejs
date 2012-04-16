@@ -65,14 +65,26 @@ function test_dependencies(callback){
   };
 
   one.dependencies(pkg, { id:templating.idGenerator() }, function(error, deps){
-    if(error) return callback(error);
-    assert.equal(deps.length, 2);
-    assert.equal(deps[0].name, 'dependency');
-    assert.equal(deps[0].parent, pkg);
-    assert.equal(deps[0].dependencies[0].name, 'subdependency');
-    assert.equal(deps[0].dependencies[0].parent, deps[0]);
-    assert.equal(deps[1].name, 'sibling');
-    callback();
+    if(error){ 
+      callback(error);
+      return;
+    }
+
+    try {
+
+      assert.equal(deps.length, 3);
+      assert.ok(verifyListContent( deps.map(function(el){ return el.name; }), ['dependency', 'sibling', 'assert']));
+
+      var dependency = deps.filter(function(el){ return el.name == 'dependency' })[0];
+      assert.equal(dependency.dependencies[0].name, 'subdependency');
+      assert.equal(dependency.dependencies[0].parent, deps[0]);
+
+      callback();
+
+    } catch(exc) {
+      callback(exc);
+    }
+
   });
 }
 
@@ -94,12 +106,12 @@ function test_loadPkg(callback){
       assert.equal(pkg.id, 1);
       assert.equal(pkg.name, 'example-project');
       assert.equal(pkg.manifest.name, 'example-project');
-      assert.equal(pkg.dependencies.length, 2);
+      assert.equal(pkg.dependencies.length, 3);
       assert.equal(pkg.main.filename, 'a.js');
 
       pkgDict = Object.keys(pkg.pkgDict);
 
-      assert.equal(pkgDict.length, 4);
+      assert.equal(pkgDict.length, 5);
       assert.equal(pkgDict[0], 'example-project');
       assert.equal(pkgDict[1], 'dependency');
       assert.equal(pkgDict[2], 'subdependency');

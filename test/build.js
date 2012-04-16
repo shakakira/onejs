@@ -110,13 +110,13 @@ function test_packageCtx(mod, callback){
 
   assert.ok( verifyListContent(moduleIds(p.modules), ['a', 'b', 'web']) );
 
-  assert.equal(p.dependencies.length, 2);
+  assert.equal(p.dependencies.length, 3);
 
   callback();
 }
 
 function test_packageTree(mod, callback){
-  assert.equal(mod.map.main.dependencies.length, 2);
+  assert.equal(mod.map.main.dependencies.length, 3);
   assert.equal(mod.map.main.dependencies[0].name, 'dependency');
   assert.equal(mod.map.main.dependencies[1].name, 'sibling');
   assert.equal(mod.map.main.dependencies[0].dependencies[0].name, 'subdependency');
