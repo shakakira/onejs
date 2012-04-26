@@ -55,12 +55,12 @@ var {{ name }} = (function(global, undefined){
       } else {
         pkg = findPkg(callingModule.pkg, uri);
 
-        if(!pkg) throw new Error('Cannot find module "'+uri+'"');
+        if(!pkg) throw new Error('Cannot find module "'+uri+'" @[module: '+callingModule.id+' package: '+callingModule.pkg.name+']');
 
         module = findPkg(callingModule.pkg, uri).main;
       }
 
-      if(!module) throw new Error('Cannot find module "'+uri+'"');
+      if(!module) throw new Error('Cannot find module "'+uri+'" @[module: '+callingModule.id+' package: '+callingModule.pkg.name+']');
 
       return module.call();
     };
