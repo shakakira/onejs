@@ -1,8 +1,8 @@
-{{ treeName }}.module({{ parentId }}, function(parent){
+{{ treeName }}.module({{ parentId }}, function(onejsModParent){
 
   return {
     'id':'{{ id }}',
-    'pkg':parent,
+    'pkg':onejsModParent,
     'wrapper':function(module, exports, global, Buffer,  process, require, undefined){
       {{>content}}
     }

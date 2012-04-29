@@ -59,11 +59,9 @@ var {{ name }} = (function(global, undefined){
         if(!pkg && nativeRequire){
           try {
             pkg = nativeRequire(uri);
-          } catch (nativeRequireError) {
-            // ignore
-          }
-          
-          return pkg;
+          } catch (nativeRequireError) {}
+
+          if(pkg) return pkg;
         }
 
         if(!pkg){
@@ -89,8 +87,10 @@ var {{ name }} = (function(global, undefined){
     mod.exports = {};
     mod.require = genRequire(mod);
 
-    mod.call = function call_module_wrapper(){
-      if(cached) return mod.exports;
+    mod.call = function(){
+      if(cached) {
+        return mod.exports;
+      }
       cached = true;
       global.require = mod.require;
       mod.wrapper(mod, mod.exports, global, global.Buffer, global.process, global.require);
@@ -152,4 +152,9 @@ var {{ name }} = (function(global, undefined){
 
 if(typeof module != 'undefined' && module.exports ){
   module.exports = {{ name }};
-}
+
+  if( !module.parent ){
+    {{ name }}.main();
+  }
+
+};
