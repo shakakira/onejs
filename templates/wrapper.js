@@ -1,8 +1,9 @@
 var {{ name }} = (function(global, undefined){
 
-  var pkgmap = {},
-      global = {},
-      lib = undefined,
+  var pkgmap        = {},
+      global        = {},
+      lib           = undefined,
+      nativeRequire = typeof require != 'undefined' && require,
       locals;
 
   {{>library}}
@@ -55,12 +56,26 @@ var {{ name }} = (function(global, undefined){
       } else {
         pkg = findPkg(callingModule.pkg, uri);
 
-        if(!pkg) throw new Error('Cannot find module "'+uri+'" @[module: '+callingModule.id+' package: '+callingModule.pkg.name+']');
+        if(!pkg && nativeRequire){
+          try {
+            pkg = nativeRequire(uri);
+          } catch (nativeRequireError) {
+            // ignore
+          }
+          
+          return pkg;
+        }
 
-        module = findPkg(callingModule.pkg, uri).main;
+        if(!pkg){
+          throw new Error('Cannot find module "'+uri+'" @[module: '+callingModule.id+' package: '+callingModule.pkg.name+']');
+        }
+
+        module = pkg.main;
       }
 
-      if(!module) throw new Error('Cannot find module "'+uri+'" @[module: '+callingModule.id+' package: '+callingModule.pkg.name+']');
+      if(!module){
+        throw new Error('Cannot find module "'+uri+'" @[module: '+callingModule.id+' package: '+callingModule.pkg.name+']');
+      }
 
       return module.call();
     };
@@ -101,7 +116,7 @@ var {{ name }} = (function(global, undefined){
     parent && parent.dependencies.push(ctx);
   }
 
-  function require(uri){
+  function mainRequire(uri){
     return pkgmap.main.main.require(uri);
   }
   
@@ -128,7 +143,7 @@ var {{ name }} = (function(global, undefined){
     'stderr':stderr,
     'stdin':stdin,
     'stdout':stdout,
-    'require':require
+    'require':mainRequire
   });
 
 })(this);

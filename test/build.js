@@ -19,6 +19,11 @@ function test_findPkg(mod, callback){
   callback();
 }
 
+function test_useNativeRequire(mod, callback){
+  assert.ok( mod.require('combiner').flatten );
+  callback();
+}
+
 function test_findModule(mod, callback){
   var g = mod.map[2].modules[1];
   
@@ -170,16 +175,17 @@ function test_require(mod, callback){
 
 
 module.exports = {
-  'init':init,
-  'test_name':test_name,
-  'test_packageTree':test_packageTree,
-  'test_moduleTree':test_moduleTree,
-  'test_packageCtx':test_packageCtx,
-  'test_moduleCtx':test_moduleCtx,
-  'test_findPkg':test_findPkg,
-  'test_findModule':test_findModule,
-  'test_require':test_require,
-  'test_process':test_process,
-  'test_globals':test_globals,
-  'test_main':test_main
+  'init': init,
+  'test_name': test_name,
+  'test_packageTree': test_packageTree,
+  'test_moduleTree': test_moduleTree,
+  'test_packageCtx': test_packageCtx,
+  'test_moduleCtx': test_moduleCtx,
+  'test_findPkg': test_findPkg,
+  'test_findModule': test_findModule,
+  'test_require': test_require,
+  'test_process': test_process,
+  'test_globals': test_globals,
+  'test_useNativeRequire': test_useNativeRequire,
+  'test_main': test_main
 };
