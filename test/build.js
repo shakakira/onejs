@@ -173,6 +173,15 @@ function test_require(mod, callback){
   callback();
 }
 
+function test_module_caching(mod, callback){
+  var now = mod.main().now;
+  assert.ok(now > +(new Date)-1000);
+  
+  setTimeout(function(){
+    assert.equal(mod.main().now, now);
+    callback();
+  }, 50);
+}
 
 module.exports = {
   'init': init,
@@ -184,6 +193,7 @@ module.exports = {
   'test_findPkg': test_findPkg,
   'test_findModule': test_findModule,
   'test_require': test_require,
+  'test_module_caching': test_module_caching,
   'test_process': test_process,
   'test_globals': test_globals,
   'test_useNativeRequire': test_useNativeRequire,
