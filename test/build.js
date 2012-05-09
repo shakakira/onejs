@@ -146,10 +146,6 @@ function test_process(mod, callback){
   assert.ok(proc.stdin instanceof proc.Stream);
   assert.ok(proc.stdout instanceof proc.Stream);
 
-  assert.equal(proc.version, process.version);
-  assert.equal(proc.versions.node, process.versions.node);
-  assert.equal(proc.versions.v8, process.versions.v8);
-
   assert.ok(proc.pid == proc.uptime);
   assert.ok(proc.arch == proc.execPath == proc.installPrefix == proc.platform == proc.title == '');
 
