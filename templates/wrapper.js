@@ -53,7 +53,7 @@ var {{ name }} = (function(global, undefined){
           pkg;
 
       if(/^\./.test(uri)){
-        module = findModule(callingModule, uri); 
+        module = findModule(callingModule, uri);
       } else {
         pkg = findPkg(callingModule.pkg, uri);
 
@@ -76,6 +76,7 @@ var {{ name }} = (function(global, undefined){
         throw new Error('Cannot find module "'+uri+'" @[module: '+callingModule.id+' package: '+callingModule.pkg.name+']');
       }
 
+      module.parent = callingModule;
       return module.call();
     };
   }

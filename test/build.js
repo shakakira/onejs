@@ -179,6 +179,16 @@ function test_module_caching(mod, callback){
   }, 50);
 }
 
+function test_parent(mod, callback){
+  var a = mod.main(),
+      f = a.dependency;
+
+  assert.equal(a.parent, undefined);
+  assert.equal(f.parent.id, 'a');
+
+  callback();
+}
+
 module.exports = {
   'init': init,
   'test_name': test_name,
@@ -193,5 +203,6 @@ module.exports = {
   'test_process': test_process,
   'test_globals': test_globals,
   'test_useNativeRequire': test_useNativeRequire,
-  'test_main': test_main
+  'test_main': test_main,
+  'test_parent': test_parent
 };

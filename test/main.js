@@ -209,7 +209,7 @@ function test_loadModule(callback){
     try {
       assert.equal(module.name, 'a');
       assert.equal(module.filename, 'example-project/lib/a.js');
-      assert.equal(module.content.substring(0,22), 'require(\'dependency\');');
+      assert.equal(module.content.substring(0,7), 'console');
       callback();
     } catch(err){
       callback(err);
