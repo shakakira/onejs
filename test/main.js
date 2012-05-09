@@ -49,6 +49,35 @@ function test_build(callback){
       });
     });
   });
+
+}
+
+
+function test_build_debug(callback){
+  one.build({ 'manifestPath':'example-project/package.json', 'debug': true }, function(error, sourceCode){
+    if(error) {
+      callback(error);
+      return;
+    }
+
+    one.save('tmp/built_debug.js', sourceCode, function(error){
+      if(error) {
+        callback(error);
+        return;
+      }
+
+      var ep  = require('../tmp/built_debug'),
+          now = ep.main().now;
+
+      assert.equal( ep.debug, true);
+
+      setTimeout(function(){
+        assert.ok( ep.main().now > now );
+        callback();
+      }, 10);
+    });
+  });
+
 }
 
 function test_dependencies(callback){
@@ -268,6 +297,7 @@ function test_flattenPkgTree(callback){
 module.exports = {
   'init':init,
   'test_build':test_build,
+  'test_build_debug':test_build_debug,
   'test_dependencies':test_dependencies,
   'test_modules':test_modules,
   'test_filterFilename':test_filterFilename,

@@ -1,6 +1,7 @@
 var {{ name }} = (function(global, undefined){
 
-  var pkgmap        = {},
+  var DEBUG         = {{#debug}}true{{/debug}}{{^debug}}false{{/debug}},
+      pkgmap        = {},
       global        = {},
       lib           = undefined,
       nativeRequire = typeof require != 'undefined' && require,
@@ -88,10 +89,12 @@ var {{ name }} = (function(global, undefined){
     mod.require = genRequire(mod);
 
     mod.call = function(){
+      {{^debug}}
       if(cached) {
         return mod.exports;
       }
       cached = true;
+      {{/debug}}
       global.require = mod.require;
       mod.wrapper(mod, mod.exports, global, global.Buffer, global.process, global.require);
       return mod.exports;
@@ -133,17 +136,20 @@ var {{ name }} = (function(global, undefined){
   }
 
   return (locals = {
-    'lib':lib,
-    'findPkg':findPkg,
-    'findModule':findModule,
-    'name':'{{ name }}',
-    'map':pkgmap,
-    'module':module,
-    'pkg':pkg,
-    'stderr':stderr,
-    'stdin':stdin,
-    'stdout':stdout,
-    'require':mainRequire
+    'lib'        : lib,
+    'findPkg'    : findPkg,
+    'findModule' : findModule,
+    'name'       : '{{ name }}',
+    'map'        : pkgmap,
+    'module'     : module,
+    'pkg'        : pkg,
+    'stderr'     : stderr,
+    'stdin'      : stdin,
+    'stdout'     : stdout,
+    'require'    : mainRequire
+{{#debug}}
+   ,'debug'      : true
+{{/debug}}
   });
 
 })(this);
