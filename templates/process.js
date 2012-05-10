@@ -60,7 +60,7 @@ exports.env = {};
 {{/debug}}
 
 {{#debug}}
-exports.env = {{ env }};
+exports.env = {{{ env }}};
 {{/debug}}
 
 exports.nextTick = function nextTick(fn){
