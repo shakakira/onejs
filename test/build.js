@@ -138,7 +138,7 @@ function test_process(mod, callback){
   assert.equal(proc.binding('buffer').Buffer, proc.Buffer);
   assert.equal(proc.binding('buffer').SlowBuffer, proc.Buffer);
 
-  assert.equal(proc.argv[0], 'node');
+  assert.equal(proc.argv[0], 'onejs');
 
   assert.ok(proc.env);
 

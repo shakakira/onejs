@@ -56,7 +56,7 @@ exports.binding = (function(){
 exports.argv = ['onejs'];
 
 {{^debug}}
-process.env = {};
+exports.env = {};
 {{/debug}}
 
 {{#debug}}
