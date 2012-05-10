@@ -189,6 +189,11 @@ function test_parent(mod, callback){
   callback();
 }
 
+function test_tie(mod, callback){
+  assert.equal(mod.require('pi'), Math.PI);
+  callback();
+}
+
 module.exports = {
   'init': init,
   'test_name': test_name,
@@ -204,5 +209,6 @@ module.exports = {
   'test_globals': test_globals,
   'test_useNativeRequire': test_useNativeRequire,
   'test_main': test_main,
-  'test_parent': test_parent
+  'test_parent': test_parent,
+  'test_tie': test_tie
 };

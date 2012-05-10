@@ -4,8 +4,13 @@ var {{ name }} = (function(global, undefined){
       pkgmap        = {},
       global        = {},
       lib           = undefined,
+
       nativeRequire = typeof require != 'undefined' && require,
-      locals;
+      ties, locals;
+
+  {{#ties}}
+ties = {{{ ties }}};
+  {{/ties}}
 
   {{>library}}
 
@@ -23,7 +28,6 @@ var {{ name }} = (function(global, undefined){
       parent = parent.parent;
     } while(!pkg && parent);
 
-    
     return pkg;
   }
 
@@ -54,6 +58,8 @@ var {{ name }} = (function(global, undefined){
 
       if(/^\./.test(uri)){
         module = findModule(callingModule, uri);
+      } else if ( ties && ties.hasOwnProperty( uri ) ) {
+        return ties[ uri ];
       } else {
         pkg = findPkg(callingModule.pkg, uri);
 

@@ -26,7 +26,7 @@ function test_verifyListContent(callback){
 }
 
 function test_build(callback){
-  one.build({ 'manifestPath':'example-project/package.json' }, function(error, sourceCode){
+  one.build({ 'manifestPath':'example-project/package.json', 'tie':[{ 'pkg':'pi', 'obj':Math.PI }] }, function(error, sourceCode){
     if(error) {
       callback(error);
       return;

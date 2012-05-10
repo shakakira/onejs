@@ -32,7 +32,7 @@ $ onejs build package.json bundle.js
 
 ## Experimenting the Bundle Script
 
-The output OneJS generates can be used by NodeJS, too. It's the easiest way of making sure if the output works or not. 
+The output OneJS generates can be used by NodeJS, too. It's the easiest way of making sure if the output works or not.
 
 ```
 > var exampleProject = require('./bundle');
@@ -76,11 +76,28 @@ if( process.env.VERBOSE ){
   console.log( "fabula de narratur" );
 }
 ```
-
 Above module becomes available to access ENV on debug-mode;
 
 ```bash
 $ VERBOSE=1 onejs build package.json --debug
+```
+
+## Requiring Global Variables
+
+OneJS doesn't change the way we access global variables. However, we may want to use require statements to access global variables (such as document, jQuery etc..) for purposes like dependency injection or documentation. Following example demonstrates the usage of `--tie` parameter that lets us require global variables;
+
+```javascript
+var $   = require('jquery'),
+    dom = require('dom'),
+    pi  = require('pi');
+
+$(dom).ready(function(){
+  console.log( pi == Math.PI ); // true
+});
+```
+
+```bash
+$ onejs build package.json --tie pi=Math.PI,jquery=jQuery,dom=document
 ```
 
 # Troubleshooting

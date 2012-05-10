@@ -9,6 +9,7 @@ var REV = '1.1.0';
 var opt = require('optimist'),
     argv = opt
     .options('debug', {})
+    .options('tie', {})
     .options('noprocess', {})
     .options('quiet', {})
     .options('verbose', {})
@@ -26,19 +27,32 @@ var HELP = ['usage: onejs [action] [manifest] [options]'
           , '  server     <manifest> <port> <host>    Publish generated JavaScript file on web. Uses 127.0.0.1:1338 by default.'
           , ''
           , 'options:'
-          , '  --debug        Disable module caching.'
-          , '  --noprocess    Do not include process implementation.'
-          , '  --quiet        Make console output less verbose.'
-          , '  --verbose      Tell what\'s going on by being verbose.'
-          , '  --version      Show version and exit.'
-          , '  --help         Show help.'
+          , '  --debug                                 Disable module caching.'
+          , '  --tie <package name>=<global object>    Create package links to specified global variables. E.g; --tie dom=window.document,jQuery=jQuery'
+          , '  --noprocess                             Do not include process implementation.'
+          , '  --quiet                                 Make console output less verbose.'
+          , '  --verbose                               Tell what\'s going on by being verbose.'
+          , '  --version                               Show version and exit.'
+          , '  --help                                  Show help.'
           , ''].join('\n');
 
 function build(){
   var manifest = argv._[1] || 'package.json',
-      target = argv._[2];
+      target = argv._[2],
+      tie = argv.tie;
 
-  one.build({ 'manifestPath':manifest, 'noprocess': argv.noprocess, 'debug': argv.debug }, function(error, pkg){
+  if(tie){
+    tie = tie.split(',')
+      .filter(function(el){
+        return el && el.indexOf('=') > -1;
+      })
+      .map(function(el){
+        el = el.split('=');
+        return { 'pkg': el[0], 'obj': el[1] };
+      });
+  }
+
+  one.build({ 'manifestPath':manifest, 'noprocess': argv.noprocess, 'tie': tie, 'debug': argv.debug }, function(error, pkg){
     if(error) throw error;
     if(target){
       one.save(target, pkg, function(error){
