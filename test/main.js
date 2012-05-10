@@ -94,7 +94,7 @@ function test_dependencies(callback){
   };
 
   one.dependencies(pkg, { id:templating.idGenerator() }, function(error, deps){
-    if(error){ 
+    if(error){
       callback(error);
       return;
     }
