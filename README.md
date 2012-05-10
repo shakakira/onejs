@@ -14,7 +14,6 @@ files that can be run on web browsers.
 ### Examples
 * See the example project included in this repository
 * MultiplayerChess.com ([Source Code](https://github.com/azer/multiplayerchess.com/tree/master/frontend) - [Output](http://multiplayerchess.com/mpc.js) )
-* [boxcars](https://github.com/azer/boxcars)
 
 # Install
 ```bash
@@ -66,6 +65,22 @@ OneJS includes a simple emulation of [NodeJS' process](http://nodejs.org/api/pro
 > exampleProject.lib.process.stdout.write("Hello World");
 > exampleProject.stdout();
 "Hello World"
+```
+
+## Debug Mode
+
+Pass `--debug` parameter disabling cache and passing ENV variables to the built file. If we assume that we have a module that depends on ENV;
+
+```javascript
+if( process.env.VERBOSE ){
+  console.log( "fabula de narratur" );
+}
+```
+
+Above module becomes available to access ENV on debug-mode;
+
+```bash
+$ VERBOSE=1 onejs build package.json --debug
 ```
 
 # Troubleshooting
