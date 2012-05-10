@@ -84,7 +84,7 @@ $ VERBOSE=1 onejs build package.json --debug
 
 ## Requiring Global Variables
 
-OneJS doesn't change the way we access global variables. However, we may want to use require statements to access global variables (such as document, jQuery etc..) for purposes like dependency injection or documentation. Following example demonstrates the usage of `--tie` parameter that lets us require global variables;
+OneJS doesn't change the way we access global variables. However, we may want to use require statements to access global variables (such as document, jQuery etc..) for purposes like dependency injection or documentation. Following example demonstrates the usage of `--tie` option that lets us require global variables;
 
 ```javascript
 var $   = require('jquery'),
@@ -98,6 +98,20 @@ $(dom).ready(function(){
 
 ```bash
 $ onejs build package.json --tie pi=Math.PI,jquery=jQuery,dom=document
+```
+
+## Excluding Specific Dependencies
+
+There are some cases we prefer to not have some dependency packages in the build. The `--exclude` option leads OneJS ignore the specified packages;
+
+```bash
+$ onejs build package.json --exclude underscore,request
+```
+
+If the case is to remove a duplication from the build, it would be a good idea to combine `--tie` and `--exclude` together;
+
+```bash
+$ onejs build package.json --exclude underscore --tie underscore=window._
 ```
 
 # Troubleshooting

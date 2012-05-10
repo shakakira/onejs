@@ -26,7 +26,7 @@ function test_verifyListContent(callback){
 }
 
 function test_build(callback){
-  one.build({ 'manifestPath':'example-project/package.json', 'tie':[{ 'pkg':'pi', 'obj':Math.PI }] }, function(error, sourceCode){
+  one.build({ 'manifestPath':'example-project/package.json', 'tie':[{ 'pkg':'pi', 'obj':Math.PI }], 'exclude':['exclude'] }, function(error, sourceCode){
     if(error) {
       callback(error);
       return;
@@ -126,7 +126,7 @@ function test_id(callback){
 }
 
 function test_loadPkg(callback){
-  one.packages.loadFromManifestPath('example-project/package.json', undefined, { id:templating.idGenerator(), 'azer':1 }, function(error, pkg){
+  one.packages.loadFromManifestPath('example-project/package.json', undefined, { id:templating.idGenerator(), 'exclude':['exclude'] }, function(error, pkg){
     if(error) return callback(error);
 
     var pkgDict, filenames;
@@ -309,4 +309,4 @@ module.exports = {
   'test_makeVariableName':test_makeVariableName,
   'test_moduleName':test_moduleName,
   'test_verifyListContent':test_verifyListContent
-}
+};

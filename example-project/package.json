@@ -3,6 +3,7 @@
   "main":"./lib/a",
   "directories":{ "lib":"./lib" },
   "dependencies":{
+    "exclude":"*",
     "dependency":"*",
     "sibling":"*",
     "one":"*"
