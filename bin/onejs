@@ -58,10 +58,11 @@ function help(){
 
 function server(){
   var manifest = argv._[1] || 'package.json',
-      host = argv._[3] || '127.0.0.1',
-      port = argv._[2] || 1338;
+      host     = argv._[3] || '127.0.0.1',
+      port     = argv._[2] || 1338,
+      debug    = argv.debug;
 
-  one.publish({ 'manifestPath':manifest, 'host':host, 'port':port });
+  one.publish({ 'manifestPath':manifest, 'host':host, 'port':port, 'debug': debug });
 }
 
 function setupNodeDeps(){
