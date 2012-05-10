@@ -22,7 +22,7 @@ var HELP = ['usage: onejs [action] [manifest] [options]'
           , ''
           , 'actions:'
           , '  build      <manifest> <target>         Generate a stand-alone JavaScript file from specified package. Write output to <target> if given any.'
-          , '  install    [modules]                   Package specified NodeJS core modules and locate them in node_modules/ directory. Example Usage: onejs install assert util.'
+          , '  install    [specified modules]         Finds and installs required or specified core modules (such as assert, tty etc..) under node_modules/ directory'
           , '  server     <manifest> <port> <host>    Publish generated JavaScript file on web. Uses 127.0.0.1:1338 by default.'
           , ''
           , 'options:'
@@ -66,11 +66,25 @@ function server(){
 
 function setupNodeDeps(){
   var modules = argv._.slice(1);
+
   modules.push(function(error){
     if(error) throw error;
   });
 
-  one.setupNodeModules.apply(undefined, modules);
+  if(modules.length){
+    one.setupNodeModules.apply(undefined, modules);
+    return;
+  }
+  
+  one.findRequiredNodeModules(function(error, requiredModules){
+    if(error){
+      one.logging.error('Failed to find required core modules.');
+      throw error;
+    }
+
+    one.setupNodeModules.apply(undefined, requiredModules);
+  });
+  
 }
 
 function verbosity(){
