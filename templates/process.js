@@ -53,9 +53,15 @@ exports.binding = (function(){
 
 })();
 
-exports.argv = ['node'];
+exports.argv = ['onejs'];
 
-exports.env = {};
+{{^debug}}
+process.env = {};
+{{/debug}}
+
+{{#debug}}
+exports.env = {{ env }};
+{{/debug}}
 
 exports.nextTick = function nextTick(fn){
   return setTimeout(fn, 0);
