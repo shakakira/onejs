@@ -26,7 +26,7 @@ function test_useNativeRequire(mod, callback){
 
 function test_findModule(mod, callback){
   var g = mod.map[2].modules[1];
-  
+
   g.id != 'g' && ( g = mod.map[2].modules[0] );
 
   assert.equal(mod.findModule(mod.map[2].main, 'g'), g);
@@ -58,7 +58,7 @@ function test_moduleTree(mod, callback){
 }
 
 function test_moduleCtx(mod, callback){
-  var pkg = mod.map[1], 
+  var pkg = mod.map[1],
       a, b, web;
 
   assert.equal(pkg.modules.length, 3);
@@ -165,14 +165,14 @@ function test_process(mod, callback){
 function test_require(mod, callback){
   assert.ok(mod.require('./b').b);
   assert.ok(mod.require('dependency').f);
-  
+
   callback();
 }
 
 function test_module_caching(mod, callback){
   var now = mod.main().now;
   assert.ok(now > +(new Date)-1000);
-  
+
   setTimeout(function(){
     assert.equal(mod.main().now, now);
     callback();
@@ -190,7 +190,8 @@ function test_parent(mod, callback){
 }
 
 function test_tie(mod, callback){
-  assert.equal(mod.require('pi'), Math.PI);
+  assert.equal(mod.require('proc'), process);
+  assert.equal(mod.require('env'), process.env);
   callback();
 }
 
