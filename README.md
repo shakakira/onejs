@@ -114,6 +114,24 @@ If the case is to remove a duplication from the build, it would be a good idea t
 $ onejs build package.json --exclude underscore --tie underscore=window._
 ```
 
+## Sandboxing Console Object
+
+OneJS doesn't provide an embed, encapsulated console object by default. Pass `--sandbox-console` if needed, output is available by `projectName.stdout()` and `project.stderr()`.
+
+```bash
+$ onejs build package.json foobar.js --sandbox-console
+```
+
+```javascript
+> var foobar = require('./foobar');
+> foobar.stdout();
+'Trying out the embed console'
+'Hello world!'
+> foobar.stderr()
+'warning! something may be going wrong!'
+'error! something went wrong!'
+```
+
 # Troubleshooting
 
 * The most common issue of a OneJS output is to lack some dependencies. In that case, make sure that the library is located under `node_modules/` properly.

@@ -12,11 +12,6 @@ var one               = require('../lib/one'),
 
 one.quiet(true);
 
-function init(options, callback){
-  callback();
-}
-
-
 function test_verifyListContent(callback){
   assert.ok(verifyListContent([3,1,4],[4,3,1]));
   assert.ok(!verifyListContent([3,[1],4],[4,3,[1]]));
@@ -38,7 +33,7 @@ function test_build(callback){
         return;
       }
 
-      kick({ module:require('./build'), 'silent': false, 'name':'built file', 'target':'../tmp/built.js' },function(error,result){
+      kick({ path:'./build', 'target':'../tmp/built.js' },function(error,result){
 
         if(error) {
           callback(error);
@@ -77,7 +72,46 @@ function test_build_debug(callback){
       }, 10);
     });
   });
+}
 
+function test_build_console(callback){
+  one.build({ 'manifestPath':'example-project/package.json', 'sandboxConsole': true }, function(error, sourceCode){
+    if(error) {
+      callback(error);
+      return;
+    }
+
+    one.save('tmp/built_console.js', sourceCode, function(error){
+      if(error) {
+        callback(error);
+        return;
+      }
+
+      var ep  = require('../tmp/built_console'),
+          a = ep.main();
+
+      assert.equal(ep.stdout(), 'Elle creuse encore, cette vieville amie au regard fatigué.\n');
+      ep.lib.process.stdout.content = '';
+
+      assert.ok(a.console != console);
+
+      assert.equal(ep.stdout(), '');
+      assert.equal(ep.stderr(), '');
+
+      a.console.log('foo');
+      assert.equal(ep.stdout(), 'foo\n');
+
+      a.console.info('bar');
+      assert.equal(ep.stdout(), 'foo\nbar\n');
+
+      a.console.warn('foo');
+      assert.equal(ep.stderr(), 'foo\n');
+      a.console.error('bar');
+      assert.equal(ep.stderr(), 'foo\nbar\n');
+
+      callback();
+    });
+  });
 }
 
 function test_dependencies(callback){
@@ -171,7 +205,7 @@ function test_modules(callback){
     }
 
     assert.ok(verifyListContent(moduleFilenames(modules), ['a.js', 'b.js','web.js']));
-    
+
     one.modules({ 'name': 'subdependency', 'manifest':{ 'main':'i' }, 'wd':'example-project/node_modules/dependency/node_modules/subdependency/' }, function(error, modules){
 
       if(error){
@@ -293,11 +327,10 @@ function test_flattenPkgTree(callback){
   callback();
 }
 
-
 module.exports = {
-  'init':init,
   'test_build':test_build,
   'test_build_debug':test_build_debug,
+  'test_build_console':test_build_console,
   'test_dependencies':test_dependencies,
   'test_modules':test_modules,
   'test_filterFilename':test_filterFilename,

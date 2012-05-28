@@ -17,7 +17,7 @@ ties = {{{ ties }}};
   function findPkg(workingPkg, uri){
     var pkg = undefined,
         parent = workingPkg;
-    
+
     var i, len;
     do {
       i = parent.dependencies.length;
@@ -103,11 +103,11 @@ ties = {{{ ties }}};
       cached = true;
       {{/debug}}
       global.require = mod.require;
-      mod.wrapper(mod, mod.exports, global, global.Buffer, global.process, global.require);
+      mod.wrapper(mod, mod.exports, global, global.Buffer,{{#sandbox_console}} global.console,{{/sandbox_console}} global.process, global.require);
       return mod.exports;
     };
 
-    if(parent.mainModuleId == mod.id){ 
+    if(parent.mainModuleId == mod.id){
       parent.main = mod;
       !parent.parent && ( locals.main = mod.call );
     }
@@ -116,7 +116,7 @@ ties = {{{ ties }}};
   }
 
   function pkg(parentId, wrapper){
-    
+
     var parent = pkgmap[parentId],
         ctx = wrapper(parent);
 
@@ -129,11 +129,11 @@ ties = {{{ ties }}};
   function mainRequire(uri){
     return pkgmap.main.main.require(uri);
   }
-  
+
   function stderr(){
     return lib.process.stderr.content;
   }
-  
+
   function stdin(){
     return lib.process.stdin.content;
   }

@@ -1,6 +1,6 @@
 {
   "name":"one",
-  "version":"1.5.1",
+  "version":"1.6.0",
   "description":"Transform NodeJS packages into single stand-alone script files.",
   "author":"Azer Koculu <azer@kodfabrik.com>",
   "keywords":["build","commonjs","browser"],
@@ -16,9 +16,10 @@
     "mustache":"0.x",
     "highkick":"1.x",
     "log4js":"0.x",
-    "genpkg":"0.x"
+    "genpkg":"0.x",
+    "boxcars":"0.x"
   },
   "scripts":{
-    "test":"node test/run.js"
+    "test":"./node_modules/highkick/bin/highkick test/main.js"
   }
 }

@@ -6,5 +6,6 @@ module.exports = {
   'now': +(new Date),
   'global':global,
   'process':process,
-  'Buffer':Buffer
-}
+  'Buffer':Buffer,
+  'console': console
+};

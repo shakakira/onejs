@@ -71,7 +71,7 @@ exports.stderr = Stream(true, false);
 exports.stdin = Stream(false, true);
 exports.stdout = Stream(true, false);
 
-exports.version = '{{ node_version }}';
+exports.version = '{{ version }}';
 
 exports.versions = {{{ versions }}};
 

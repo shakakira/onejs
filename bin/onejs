@@ -27,9 +27,13 @@ var HELP = ['usage: onejs [action] [manifest] [options]'
           , '  server     <manifest> <port> <host>    Publish generated JavaScript file on web. Uses 127.0.0.1:1338 by default.'
           , ''
           , 'options:'
-          , '  --debug                                 Disable module caching.'
-          , '  --tie <package name>=<global object>    Create package links to specified global variables. E.g; --tie dom=window.document,jQuery=jQuery'
+          , '  --debug                                 Disable module caching. Pass ENV variables to the build.'
+          , ''
+          , '  --tie <package name>=<global object>    Create package links to specified global variables. e.g; --tie dom=window.document,jQuery=jQuery'
+          , '  --exclude <package name>                Do not contain specified dependencies. e.g: --exclude underscore,request '
           , '  --noprocess                             Do not include process implementation.'
+          , '  --sandbox-console                       Provide the build an encapsulated, embed console implementation.'
+          , ''
           , '  --quiet                                 Make console output less verbose.'
           , '  --verbose                               Tell what\'s going on by being verbose.'
           , '  --version                               Show version and exit.'
@@ -37,10 +41,11 @@ var HELP = ['usage: onejs [action] [manifest] [options]'
           , ''].join('\n');
 
 function build(){
-  var manifest = argv._[1] || 'package.json',
-      target   = argv._[2],
-      tie      = argv.tie,
-      exclude  = argv.exclude;
+  var manifest       = argv._[1] || 'package.json',
+      target         = argv._[2],
+      tie            = argv.tie,
+      exclude        = argv.exclude,
+      sandboxConsole = argv['sandbox-console'];
 
   if(tie){
     tie = tie.split(',')
@@ -55,7 +60,16 @@ function build(){
 
   exclude && ( exclude = exclude.split(',').filter(function(el){ return el && el.length }) );
 
-  one.build({ 'manifestPath':manifest, 'noprocess': argv.noprocess, 'tie': tie, 'debug': argv.debug, 'exclude': exclude }, function(error, pkg){
+  var options = {
+    'manifestPath':manifest,
+    'noprocess': argv.noprocess,
+    'tie': tie,
+    'debug': argv.debug,
+    'exclude': exclude,
+    'sandboxConsole': sandboxConsole
+  };
+
+  one.build(options, function(error, pkg){
     if(error) throw error;
     if(target){
       one.save(target, pkg, function(error){
