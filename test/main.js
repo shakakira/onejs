@@ -151,6 +151,37 @@ function test_dependencies(callback){
   });
 }
 
+function test_dependencies_in_parent_dir(callback){
+  var pkg = {
+    'name':'dependency',
+    'manifest':{
+      'dependencies':{
+        'subdependency':'*',
+        'sibling':'*'
+      }
+    },
+    'wd':'example-project/node_modules/dependency',
+    'pkgDict':{}
+  };
+
+  one.dependencies(pkg, { id:templating.idGenerator() }, function(error, deps){
+    if(error){
+      callback(error);
+      return;
+    }
+
+    try {
+      assert.equal(deps.length, 2);
+      assert.ok(verifyListContent( deps.map(function(el){ return el.name; }), ['subdependency', 'sibling']));
+
+      callback();
+    } catch(exc) {
+      callback(exc);
+    }
+
+  });
+}
+
 function test_id(callback){
   var i = templating.id();
   assert.equal(typeof i, 'number');
@@ -332,6 +363,7 @@ module.exports = {
   'test_build_debug':test_build_debug,
   'test_build_console':test_build_console,
   'test_dependencies':test_dependencies,
+  'test_dependencies_in_parent_dir': test_dependencies_in_parent_dir,
   'test_modules':test_modules,
   'test_filterFilename':test_filterFilename,
   'test_flattenPkgTree':test_flattenPkgTree,

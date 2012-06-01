@@ -120,6 +120,10 @@ ties = {{{ ties }}};
     var parent = pkgmap[parentId],
         ctx = wrapper(parent);
 
+    if(pkgmap.hasOwnProperty(ctx.id)){
+      throw new Error('Package#'+ctx.id+' "' + ctx.name + '" has duplication of itself.');
+    }
+
     pkgmap[ctx.id] = ctx;
     !parent && ( pkgmap['main'] = ctx );
 

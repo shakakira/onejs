@@ -121,6 +121,10 @@ function test_packageCtx(mod, callback){
 }
 
 function test_packageTree(mod, callback){
+  mod.map.main.dependencies.map(function(el){
+    console.log('!!', el.name);
+  });
+
   assert.equal(mod.map.main.dependencies.length, 3);
   assert.equal(mod.map.main.dependencies[0].name, 'dependency');
   assert.equal(mod.map.main.dependencies[1].name, 'sibling');
