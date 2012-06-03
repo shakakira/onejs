@@ -2,7 +2,7 @@ function moduleFilenames(modules){
   return modules.map(function(el){ return el.filename; });
 }
 
-function verifyListContent(a,b){
+function assertListContent(a,b){
   return a.length == b.length && a.every(function(el){
     return b.indexOf(el) > -1;
   });
@@ -10,5 +10,5 @@ function verifyListContent(a,b){
 
 module.exports = {
   'moduleFilenames': moduleFilenames,
-  'verifyListContent': verifyListContent
+  'assertListContent': assertListContent
 }

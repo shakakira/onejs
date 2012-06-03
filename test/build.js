@@ -1,6 +1,8 @@
 var assert            = require('assert'),
+    one               = require('../lib'),
+
     common            = require('./common'),
-    verifyListContent = common.verifyListContent;
+    assertListContent = common.assertListContent;
 
 function moduleIds(modules){
   return modules.map(function(m){
@@ -9,7 +11,24 @@ function moduleIds(modules){
 }
 
 function init(options, callback){
-  callback(null, require(options.target));
+  one.build({ 'manifestPath':'example-project/package.json', 'tie':[{ 'pkg':'proc', 'obj':'process' }, { 'pkg': 'env', 'obj': 'process.env' }], 'exclude':['exclude'] }, function(error, sourceCode){
+
+    if(error) {
+      callback(error);
+      return;
+    }
+
+    one.save('tmp/built.js', sourceCode, function(error){
+
+      if(error) {
+        callback(error);
+        return;
+      }
+
+      callback(undefined, require('../tmp/built'));
+    });
+  });
+
 }
 
 function test_findPkg(mod, callback){
@@ -52,8 +71,8 @@ function test_main(mod, callback){
 }
 
 function test_moduleTree(mod, callback){
-  assert.ok( verifyListContent(moduleIds(mod.map[1].modules), ['a', 'b', 'web'] ) );
-  assert.ok( verifyListContent(moduleIds(mod.map[3].modules), ['i'] ) );
+  assert.ok( assertListContent(moduleIds(mod.map[1].modules), ['a', 'b', 'web'] ) );
+  assert.ok( assertListContent(moduleIds(mod.map[3].modules), ['i'] ) );
   callback();
 }
 
@@ -113,7 +132,7 @@ function test_packageCtx(mod, callback){
   assert.equal(p.mainModuleId, 'a');
   assert.equal(p.main.id, 'a');
 
-  assert.ok( verifyListContent(moduleIds(p.modules), ['a', 'b', 'web']) );
+  assert.ok( assertListContent(moduleIds(p.modules), ['a', 'b', 'web']) );
 
   assert.equal(p.dependencies.length, 3);
 
