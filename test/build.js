@@ -11,7 +11,7 @@ function moduleIds(modules){
 }
 
 function init(options, callback){
-//  return callback( undefined, require('../tmp/built') );
+  one.pkg.id = one.id();
   one.build({ 'manifestPath':'example-project/package.json', 'tie':[{ 'pkg':'proc', 'obj':'process' }, { 'pkg': 'env', 'obj': 'process.env' }], 'exclude':['exclude'] }, function(error, sourceCode){
 
     if(error) {
@@ -103,10 +103,6 @@ function test_moduleCtx(mod, callback){
   assert.equal(typeof a.wrapper, 'function');
   assert.ok(a.require('dependency').f);
   assert.ok(a.require('./b').b);
-
-  mod.map.main.dependencies.forEach(function(el){
-    console.log(333, el.name);
-  });
 
   var n = mod.map.main.dependencies[ mod.map.main.dependencies[0].name == 'sibling' ? 0 :1 ].main;
 

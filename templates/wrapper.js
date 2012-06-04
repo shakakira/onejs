@@ -1,6 +1,7 @@
 var {{ name }} = (function(global, undefined){
 
   var DEBUG         = {{#debug}}true{{/debug}}{{^debug}}false{{/debug}},
+      pkgdefs       = {},
       pkgmap        = {},
       global        = {},
       lib           = undefined,
@@ -15,20 +16,7 @@ ties = {{{ ties }}};
   {{>library}}
 
   function findPkg(workingPkg, uri){
-    var pkg = undefined,
-        parent = workingPkg;
-
-    var i, len;
-    do {
-      i = parent.dependencies.length;
-      while(i-->0){
-        parent.dependencies[i].name == uri && ( pkg = parent.dependencies[i] );
-      }
-
-      parent = parent.parents[0];
-    } while(!pkg && parent);
-
-    return pkg;
+    return pkgmap[uri];
   }
 
   function findModule(workingModule, uri){
@@ -88,7 +76,7 @@ ties = {{{ ties }}};
   }
 
   function module(parentId, wrapper){
-    var parent = pkgmap[parentId],
+    var parent = pkgdefs[parentId],
         mod = wrapper(parent),
         cached = false;
 
@@ -118,10 +106,10 @@ ties = {{{ ties }}};
   function pkg(/* [ parentId ...], wrapper */){
 
     var wrapper = arguments[ arguments.length - 1 ],
-        parents = Array.prototype.slice.call(arguments, 0, arguments.length - 1).map(function(id){ return pkgmap[id]; }),
+        parents = Array.prototype.slice.call(arguments, 0, arguments.length - 1).map(function(id){ return pkgdefs[id]; }),
         ctx = wrapper(parents);
 
-    if(pkgmap.hasOwnProperty(ctx.id)){
+    if(pkgdefs.hasOwnProperty(ctx.id)){
       throw new Error('Package#'+ctx.id+' "' + ctx.name + '" has duplication of itself.');
     }
 
@@ -130,13 +118,14 @@ ties = {{{ ties }}};
       parents[i].dependencies.push(ctx);
     }
 
-    pkgmap[ctx.id] = ctx;
+    pkgdefs[ctx.id] = ctx;
+    pkgmap[ctx.name] = ctx;
 
-    arguments.length == 1 && ( pkgmap['main'] = ctx );
+    arguments.length == 1 && ( pkgdefs['main'] = ctx );
   }
 
   function mainRequire(uri){
-    return pkgmap.main.main.require(uri);
+    return pkgdefs.main.main.require(uri);
   }
 
   function stderr(){
@@ -156,7 +145,7 @@ ties = {{{ ties }}};
     'findPkg'    : findPkg,
     'findModule' : findModule,
     'name'       : '{{ name }}',
-    'map'        : pkgmap,
+    'map'        : pkgdefs,
     'module'     : module,
     'pkg'        : pkg,
     'stderr'     : stderr,
