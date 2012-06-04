@@ -6,32 +6,60 @@ var assert            = require('assert'),
     assertListContent = utils.assertListContent,
     moduleFilenames   = utils.moduleFilenames;
 
+function beforeEach(callback){
+  one.pkg.id = one.id();
+  callback();
+}
+
 function testConstruct(callback){
 
   var ctx1 = {
     'id': 5,
-    'parent': undefined,
     'manifest': {
       'name': 'foobar',
       'directories': undefined
-    }
+    },
+    'wd': 'foobar'
   };
 
   var ctx2 = {
+    'id': undefined,
+    'manifest': {
+      'name': 'qux',
+      'directories': {
+        'lib': './lib'
+      }
+    },
+    'wd': 'qux'
+  };
+
+  var ctx3 = {
     'id': undefined,
     'manifest': {
       'name': 'quux',
       'directories': {
         'lib': './lib'
       }
-    }
+    },
+    'wd': 'quux'
+  };
+
+  var ctx4 = {
+    'id': undefined,
+    'manifest': {
+      'name': 'corge',
+      'directories': {
+        'lib': './lib'
+      }
+    },
+    'wd': 'corge'
   };
 
   one.pkg.construct(ctx1, function(error, pkg1){
     assert.ok(!error);
     assert.equal(pkg1.id, 5);
     assert.equal(pkg1.name, 'foobar');
-    assert.equal(pkg1.parent, undefined);
+    assert.equal(pkg1.parents.length, 0);
     assert.ok(pkg1.pkgdict);
     assert.ok(pkg1.dirs);
 
@@ -40,12 +68,42 @@ function testConstruct(callback){
     one.pkg.construct(ctx2, function(error, pkg2){
       assert.ok(!error);
       assert.equal(pkg2.id, 1);
-      assert.equal(pkg2.name, 'quux');
-      assert.equal(pkg2.parent, pkg1);
+      assert.equal(pkg2.name, 'qux');
+
+      assert.equal(pkg2.parents.length, 1);
+      assert.equal(pkg2.parents[0], pkg1);
+
       assert.equal(pkg2.pkgdict, pkg1.pkgdict);
       assert.equal(pkg2.dirs.lib, './lib');
 
-      callback();
+      ctx3.parents = [pkg2];
+
+      one.pkg.construct(ctx3, function(error, pkg3){
+        assert.ok(!error);
+
+        assert.equal(pkg3.name, 'quux');
+        assert.equal(pkg3.pkgdict, pkg1.pkgdict);
+        assert.equal(pkg3.parents.length, 1);
+
+        assert.equal(pkg3.parents[0], pkg2);
+
+        ctx4.parents = [pkg2, pkg3];
+
+        one.pkg.construct(ctx4, function(error, pkg4){
+          assert.ok(!error);
+
+          assert.equal(pkg4.name, 'corge');
+          assert.equal(pkg4.pkgdict, pkg1.pkgdict);
+          assert.equal(pkg4.parents.length, 2);
+          assert.equal(pkg4.parents[0], pkg2);
+          assert.equal(pkg4.parents[1], pkg3);
+
+          callback();
+
+        });
+
+      });
+
     });
 
   });
@@ -66,7 +124,7 @@ function testContent(callback){
         return;
       }
 
-      one.pkg.content(pkg, { '!!':11, 'exclude': ['exclude'] }, function(error, pkg){
+      one.pkg.content(pkg, { 'exclude': ['exclude'] }, function(error, pkg){
 
         if(error){
           callback(error);
@@ -112,7 +170,20 @@ function testContent(callback){
 
 }
 
+function testMain(callback){
+  one.pkg({ 'manifestPath':'example-project/package.json', 'exclude':['exclude'] }, function(error, ep){
+    assert.equal(ep.id, 1);
+    assert.equal(ep.name, 'example-project');
+    assert.equal(ep.manifest.name, 'example-project');
+    assert.equal(ep.dependencies.length, 3);
+    assert.equal(ep.main.filename, 'a.js');
+    callback();
+  });
+}
+
 module.exports = {
+  'beforeEach': beforeEach,
   'testConstruct': testConstruct,
-  'testLoad': testContent
+  'testContent': testContent,
+  'testMain': testMain
 };

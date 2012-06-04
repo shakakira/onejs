@@ -1,6 +1,9 @@
 {
   "name":"example-project",
   "main":"./lib/a",
+  "bin":{
+    "ep":"./bin/ep"
+  },
   "directories":{ "lib":"./lib" },
   "dependencies":{
     "exclude":"*",

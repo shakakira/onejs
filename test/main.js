@@ -10,9 +10,11 @@ var one               = require('../lib'),
     moduleFilenames   = common.moduleFilenames,
     assertListContent = common.assertListContent;
 
-//one.quiet(true);
+one.quiet(true);
 
-var test_build = kick('./build');
+var test_build = kick('./build'),
+    test_package = kick('./package'),
+    test_manifest = kick('./manifest');
 
 function test_assertListContent(callback){
   assert.ok(assertListContent([3,1,4],[4,3,1]));
@@ -89,35 +91,63 @@ function test_build_console(callback){
 }
 
 function test_dependencies(callback){
+  one.manifest('example-project/package.json', function(error, manifest){
+
+    if(error){
+      callback(error);
+      return;
+    }
+
+    one.pkg.construct({ 'manifest': manifest, 'wd': 'example-project/' }, function(error, pkg1){
+
+
+      one.dependencies(pkg1, { 'exclude':['exclude'] }, function(error, deps){
+        if(error){
+          callback(error);
+          return;
+        }
+
+        assert.equal(deps.length, 3);
+        assert.ok(assertListContent( deps.map(function(el){ return el.name; }), ['dependency', 'sibling', 'assert']));
+
+        var dependency = deps.filter(function(el){ return el.name == 'dependency' })[0];
+        assert.equal(dependency.dependencies[0].name, 'subdependency');
+
+        assert.equal(dependency.dependencies[0].parents[0], deps[0]);
+
+        callback();
+
+      });
+
+    });
+
+  });
+}
+
+function test_dependencies_in_parent_dir(callback){
   var pkg = {
-    'name':'example-project',
+    'name':'dependency',
     'manifest':{
       'dependencies':{
-        'dependency':'*',
+        'subdependency':'*',
         'sibling':'*'
       }
     },
-    'wd':'example-project/',
+    'wd':'example-project/node_modules/dependency',
     'pkgdict':{}
   };
 
-  one.dependencies(pkg, { id:templating.idGenerator() }, function(error, deps){
+  one.dependencies(pkg, {}, function(error, deps){
     if(error){
       callback(error);
       return;
     }
 
     try {
-
-      assert.equal(deps.length, 3);
-      assert.ok(assertListContent( deps.map(function(el){ return el.name; }), ['dependency', 'sibling', 'assert']));
-
-      var dependency = deps.filter(function(el){ return el.name == 'dependency' })[0];
-      assert.equal(dependency.dependencies[0].name, 'subdependency');
-      assert.equal(dependency.dependencies[0].parent, deps[0]);
+      assert.equal(deps.length, 2);
+      assert.ok(assertListContent( deps.map(function(el){ return el.name; }), ['subdependency', 'sibling']));
 
       callback();
-
     } catch(exc) {
       callback(exc);
     }
@@ -217,48 +247,31 @@ function test_makeVariableName(callback){
 
 function test_flattenPkgTree(callback){
   var ids = [1,2,3,4,5,6,9,7,8],
-      tree = {
-        'id':1,
-        'dependencies':[
-          { 'id': 2 },
-          {
-            'id':3,
-            'dependencies':[
-              { 'id':4, 'dependencies':[] },
-              {
-                'id':5,
-                'dependencies':[
-                  {
-                    'id':6,
-                    'dependencies':[
-                      { 'id':9 }
-                    ]
-                  },
-                  { 'id':7 },
-                  { 'id':8, 'dependencies':[] }
-                ]
-              }
-            ]
-          }
-        ]
+      map = {
+        pkgdict: {
+          'corge': 0,
+          'foo': 1,
+          'bar': 2,
+          'quux': 3
+        }
       };
 
-  var flat = render.flattenPkgTree(tree);
-  assert.equal(flat.length, 9);
+  var flat = render.flattenPkgTree(map);
+  assert.equal(flat.length, 4);
 
-  var i = 9;
-  while(i-->0){
-    assert.equal(flat[i].id, ids[i]);
+  var i = 4;
+  while( i -- ){
+    assert.equal(flat[i], i);
   }
 
   callback();
 }
 
 module.exports = {
-  'test_build':test_build,
-  'test_build_debug':test_build_debug,
-  'test_build_console':test_build_console,
+  'test_package': test_package,
+  'test_manifest': test_manifest,
   'test_dependencies':test_dependencies,
+  'test_dependencies_in_parent_dir': test_dependencies_in_parent_dir,
   'test_modules':test_modules,
   'test_filterFilename':test_filterFilename,
   'test_flattenPkgTree':test_flattenPkgTree,
@@ -266,5 +279,8 @@ module.exports = {
   'test_loadModule':test_loadModule,
   'test_makeVariableName':test_makeVariableName,
   'test_moduleName':test_moduleName,
-  'test_assertListContent':test_assertListContent
+  'test_assertListContent':test_assertListContent,
+  'test_build':test_build,
+  'test_build_debug':test_build_debug,
+  'test_build_console':test_build_console
 };

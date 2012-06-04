@@ -25,7 +25,7 @@ ties = {{{ ties }}};
         parent.dependencies[i].name == uri && ( pkg = parent.dependencies[i] );
       }
 
-      parent = parent.parent;
+      parent = parent.parents[0];
     } while(!pkg && parent);
 
     return pkg;
@@ -109,21 +109,30 @@ ties = {{{ ties }}};
 
     if(parent.mainModuleId == mod.id){
       parent.main = mod;
-      !parent.parent && ( locals.main = mod.call );
+      parent.parents.length == 0 && ( locals.main = mod.call );
     }
 
     parent.modules.push(mod);
   }
 
-  function pkg(parentId, wrapper){
+  function pkg(/* [ parentId ...], wrapper */){
 
-    var parent = pkgmap[parentId],
-        ctx = wrapper(parent);
+    var wrapper = arguments[ arguments.length - 1 ],
+        parents = Array.prototype.slice.call(arguments, 0, arguments.length - 1).map(function(id){ return pkgmap[id]; }),
+        ctx = wrapper(parents);
+
+    if(pkgmap.hasOwnProperty(ctx.id)){
+      throw new Error('Package#'+ctx.id+' "' + ctx.name + '" has duplication of itself.');
+    }
+
+    var i = parents.length;
+    while( i -- ){
+      parents[i].dependencies.push(ctx);
+    }
 
     pkgmap[ctx.id] = ctx;
-    !parent && ( pkgmap['main'] = ctx );
 
-    parent && parent.dependencies.push(ctx);
+    arguments.length == 1 && ( pkgmap['main'] = ctx );
   }
 
   function mainRequire(uri){

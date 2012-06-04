@@ -1,4 +1,4 @@
-{{ treeName }}.pkg({{ parentId }}, function(parent){
+{{ treeName }}.pkg({{#hasParent}}{{ parentIds }}, {{/hasParent}}function(parents){
 
   return {
     'id':{{ id }},
@@ -7,7 +7,7 @@
     'mainModuleId':'{{ main }}',
     'dependencies':[],
     'modules':[],
-    'parent':parent
+    'parents':parents
   };
 
 });
