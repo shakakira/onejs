@@ -197,7 +197,7 @@ function test_filterFilename(callback){
 }
 
 function test_loadModule(callback){
-  one.modules.load('example-project/lib/a.js', function(error, module){
+  one.modules.loadModule('example-project/lib/a.js', function(error, module){
     try {
       assert.equal(module.name, 'a');
       assert.equal(module.filename, 'example-project/lib/a.js');
