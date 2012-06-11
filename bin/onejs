@@ -58,10 +58,9 @@ function build(){
       });
   }
 
-  exclude && ( exclude = exclude.split(',').filter(function(el){ return el && el.length }) );
+  exclude && ( exclude = exclude.split(',').filter(function(el){ return el && el.length; }) );
 
   var options = {
-    'manifestPath':manifest,
     'noprocess': argv.noprocess,
     'tie': tie,
     'debug': argv.debug,
@@ -69,7 +68,7 @@ function build(){
     'sandboxConsole': sandboxConsole
   };
 
-  one.build(options, function(error, pkg){
+  one.build(manifest, options, function(error, pkg){
     if(error) throw error;
     if(target){
       one.save(target, pkg, function(error){

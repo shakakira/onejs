@@ -12,9 +12,10 @@ var one               = require('../lib'),
 
 one.quiet(true);
 
-var test_build = kick('./build'),
-    test_package = kick('./package'),
-    test_manifest = kick('./manifest');
+var test_build     = kick('./build'),
+    test_package   = kick('./package'),
+    test_manifest  = kick('./manifest'),
+    test_npmignore = kick('./npmignore');
 
 function test_assertListContent(callback){
   assert.ok(assertListContent([3,1,4],[4,3,1]));
@@ -165,7 +166,7 @@ function test_id(callback){
 
 
 function test_modules(callback){
-  one.modules({ 'name':'example-project', 'dirs':{'lib':'lib'}, 'wd':'example-project/' }, function(error, modules){
+  one.modules({ 'name':'example-project', 'ignore':['lib/ignore'], 'dirs':{'lib':'lib'}, 'wd':'example-project/' }, {}, function(error, modules){
 
     if(error){
       callback(error);
@@ -174,7 +175,7 @@ function test_modules(callback){
 
     assert.ok(assertListContent(moduleFilenames(modules), ['a.js', 'b.js','web.js']));
 
-    one.modules({ 'name': 'subdependency', 'manifest':{ 'main':'i' }, 'wd':'example-project/node_modules/dependency/node_modules/subdependency/' }, function(error, modules){
+    one.modules({ 'name': 'subdependency', 'manifest':{ 'main':'i' }, 'wd':'example-project/node_modules/dependency/node_modules/subdependency/' }, {}, function(error, modules){
 
       if(error){
         callback(error);
@@ -282,5 +283,6 @@ module.exports = {
   'test_assertListContent':test_assertListContent,
   'test_build':test_build,
   'test_build_debug':test_build_debug,
-  'test_build_console':test_build_console
+  'test_build_console':test_build_console,
+  'test_npmignore': test_npmignore
 };

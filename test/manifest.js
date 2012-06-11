@@ -1,5 +1,4 @@
 var assert   = require('assert'),
-    highkick = require('highkick'),
     onejs    = require('../lib/');
 
 function testFind(callback){

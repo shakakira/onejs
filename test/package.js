@@ -1,5 +1,4 @@
 var assert            = require('assert'),
-    highkick          = require('highkick'),
     one               = require('../lib/'),
 
     utils             = require('./common'),
@@ -117,7 +116,7 @@ function testContent(callback){
       return;
     }
 
-    one.pkg.construct({ 'manifest': manifest, 'wd':'example-project/' }, function(error, pkg){
+    one.pkg.construct({ 'manifest': manifest, 'ignore':['lib/ignored1.js', 'lib/ignored2', 'lib/ignored3'], 'wd':'example-project/' }, function(error, pkg){
 
       if(error){
         callback(error);
