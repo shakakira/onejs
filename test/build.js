@@ -99,6 +99,8 @@ function test_moduleCtx(mod, callback){
   assert.equal(g.pkg.name, 'dependency');
   assert.equal(typeof g.wrapper, 'function');
 
+  assertListContent(mod.packages.fruits.index.call(), ['apple', 'orange']);
+
   callback();
 }
 
@@ -127,10 +129,14 @@ function test_packageCtx(mod, callback){
 
 function test_packageTree(mod, callback){
 
-  var main = mod.packages.main,
-      dependency = mod.packages.dependency,
-      sibling = mod.packages.sibling,
-      subdependency = mod.packages.subdependency;
+  var main          = mod.packages.main,
+      dependency    = mod.packages.dependency,
+      sibling       = mod.packages.sibling,
+      subdependency = mod.packages.subdependency,
+      fruits        = mod.packages.fruits;
+
+  assert.equal( fruits.parents.length, 1 );
+  assert.equal( fruits.parents[0], dependency.id );
 
   assert.equal( subdependency.parents.length, 1 );
   assert.equal( subdependency.parents[0], dependency.id );

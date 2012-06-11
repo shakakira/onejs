@@ -141,14 +141,14 @@ function testContent(callback){
 
           pkgdict = Object.keys(pkg.pkgdict);
 
-          assert.equal(pkgdict.length, 5);
+          assert.equal(pkgdict.length, 6);
           assert.equal(pkgdict[0], 'example-project');
           assert.equal(pkgdict[1], 'dependency');
           assert.equal(pkgdict[2], 'subdependency');
-          assert.equal(pkgdict[3], 'sibling');
+          assert.equal(pkgdict[3], 'fruits');
+          assert.equal(pkgdict[4], 'sibling');
 
           assert.ok(assertListContent( moduleFilenames(pkg.modules), ['web.js', 'a.js', 'b.js']));
-
 
           assert.ok(assertListContent( moduleFilenames(pkg.pkgdict.dependency.modules), ['f.js','g.js']));
 

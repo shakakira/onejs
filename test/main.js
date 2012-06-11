@@ -259,7 +259,6 @@ function test_flattenPkgTree(callback){
 
 module.exports = {
   'init': clean,
-  'end': clean,
   'test_package': test_package,
   'test_manifest': test_manifest,
   'test_dependencies':test_dependencies,
