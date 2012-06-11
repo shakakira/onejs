@@ -22,7 +22,7 @@ var test_build     = kick('./build'),
 
 function clean(){
   var callback = arguments[ arguments.length - 1 ],
-      rm = child_process.exec('rm -rf tmp & mkdir tmp');
+      rm = child_process.exec('rm -rf tmp/* & mkdir tmp');
 
   rm.on('exit', function(){
     callback && callback();

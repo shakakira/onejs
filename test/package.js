@@ -154,6 +154,8 @@ function testContent(callback){
 
           assert.ok(assertListContent( moduleFilenames(pkg.pkgdict.subdependency.modules ), ['i.js']));
 
+          assert.ok(assertListContent( moduleFilenames(pkg.pkgdict.fruits.modules ), ['index.js', 'lib/fruits.js']));
+
           assert.ok(assertListContent( moduleFilenames(pkg.pkgdict.sibling.modules), ['p/index.js', 'p/r.js', 's/t.js', 'n.js']));
 
           callback();
