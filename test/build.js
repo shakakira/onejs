@@ -11,25 +11,9 @@ function moduleIds(modules){
 }
 
 function init(options, callback){
-  one.pkg.id = one.id();
-  one.build('example-project/package.json', { 'tie':[{ 'pkg':'proc', 'obj':'process' }, { 'pkg': 'env', 'obj': 'process.env' }], 'exclude':['exclude'] }, function(error, sourceCode){
-
-    if(error) {
-      callback(error);
-      return;
-    }
-
-    one.save('tmp/built.js', sourceCode, function(error){
-
-      if(error) {
-        callback(error);
-        return;
-      }
-
-      callback(undefined, require('../tmp/built'));
-    });
+  common.build('tmp/built.js', ['--tie proc=process,env=process.env', '--exclude exclude'], function(exitCode){
+    callback(undefined, require('../tmp/built'));
   });
-
 }
 
 function test_findPkg(mod, callback){

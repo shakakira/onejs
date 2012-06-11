@@ -1,10 +1,13 @@
-var one               = require('../lib'),
+var child_process     = require('child_process'),
+
+    one               = require('../lib'),
     templating        = require('../lib/templating'),
     render            = require('../lib/render'),
 
     assert            = require('assert'),
     fs                = require('fs'),
     kick              = require('highkick'),
+
 
     common            = require('./common'),
     moduleFilenames   = common.moduleFilenames,
@@ -17,6 +20,15 @@ var test_build     = kick('./build'),
     test_manifest  = kick('./manifest'),
     test_npmignore = kick('./npmignore');
 
+function clean(){
+  var callback = arguments[ arguments.length - 1 ],
+      rm = child_process.exec('rm -rf tmp & mkdir tmp');
+
+  rm.on('exit', function(){
+    callback && callback();
+  });
+}
+
 function test_assertListContent(callback){
   assert.ok(assertListContent([3,1,4],[4,3,1]));
   assert.ok(!assertListContent([3,[1],4],[4,3,[1]]));
@@ -26,68 +38,45 @@ function test_assertListContent(callback){
 }
 
 function test_build_debug(callback){
-  one.build('example-project/package.json', { 'debug': true }, function(error, sourceCode){
-    if(error) {
-      callback(error);
-      return;
-    }
+  common.build('tmp/built_debug.js', ['--debug'], function(exitCode){
+    var ep  = require('../tmp/built_debug'),
+        now = ep.main().now;
 
-    one.save('tmp/built_debug.js', sourceCode, function(error){
-      if(error) {
-        callback(error);
-        return;
-      }
+    assert.equal( ep.debug, true);
 
-      var ep  = require('../tmp/built_debug'),
-          now = ep.main().now;
-
-      assert.equal( ep.debug, true);
-
-      setTimeout(function(){
-        assert.ok( ep.main().now > now );
-        callback();
-      }, 10);
-    });
+    setTimeout(function(){
+      assert.ok( ep.main().now > now );
+      callback();
+    }, 10);
   });
 }
 
 function test_build_console(callback){
-  one.build('example-project/package.json', { 'sandboxConsole': true }, function(error, sourceCode){
-    if(error) {
-      callback(error);
-      return;
-    }
+  common.build('tmp/built_console.js', ['--sandbox-console'], function(exitCode){
 
-    one.save('tmp/built_console.js', sourceCode, function(error){
-      if(error) {
-        callback(error);
-        return;
-      }
+    var ep  = require('../tmp/built_console'),
+        a = ep.main();
 
-      var ep  = require('../tmp/built_console'),
-          a = ep.main();
+    assert.equal(ep.stdout(), 'Elle creuse encore, cette vieville amie au regard fatigué.\n');
+    ep.lib.process.stdout.content = '';
 
-      assert.equal(ep.stdout(), 'Elle creuse encore, cette vieville amie au regard fatigué.\n');
-      ep.lib.process.stdout.content = '';
+    assert.ok(a.console != console);
 
-      assert.ok(a.console != console);
+    assert.equal(ep.stdout(), '');
+    assert.equal(ep.stderr(), '');
 
-      assert.equal(ep.stdout(), '');
-      assert.equal(ep.stderr(), '');
+    a.console.log('foo');
+    assert.equal(ep.stdout(), 'foo\n');
 
-      a.console.log('foo');
-      assert.equal(ep.stdout(), 'foo\n');
+    a.console.info('bar');
+    assert.equal(ep.stdout(), 'foo\nbar\n');
 
-      a.console.info('bar');
-      assert.equal(ep.stdout(), 'foo\nbar\n');
+    a.console.warn('foo');
+    assert.equal(ep.stderr(), 'foo\n');
+    a.console.error('bar');
+    assert.equal(ep.stderr(), 'foo\nbar\n');
 
-      a.console.warn('foo');
-      assert.equal(ep.stderr(), 'foo\n');
-      a.console.error('bar');
-      assert.equal(ep.stderr(), 'foo\nbar\n');
-
-      callback();
-    });
+    callback();
   });
 }
 
@@ -269,6 +258,8 @@ function test_flattenPkgTree(callback){
 }
 
 module.exports = {
+  'init': clean,
+  'end': clean,
   'test_package': test_package,
   'test_manifest': test_manifest,
   'test_dependencies':test_dependencies,
