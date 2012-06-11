@@ -171,7 +171,7 @@ function testContent(callback){
 }
 
 function testMain(callback){
-  one.pkg({ 'manifestPath':'example-project/package.json', 'exclude':['exclude'] }, function(error, ep){
+  one.pkg('example-project/package.json', { 'exclude':['exclude'] }, function(error, ep){
     assert.equal(ep.id, 1);
     assert.equal(ep.name, 'example-project');
     assert.equal(ep.manifest.name, 'example-project');

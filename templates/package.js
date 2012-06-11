@@ -5,7 +5,6 @@
     'name':'{{ name }}',
     'main':undefined,
     'mainModuleId':'{{ main }}',
-    'dependencies':[],
     'modules':[],
     'parents':parents
   };

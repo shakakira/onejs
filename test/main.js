@@ -25,7 +25,7 @@ function test_assertListContent(callback){
 }
 
 function test_build_debug(callback){
-  one.build({ 'manifestPath':'example-project/package.json', 'debug': true }, function(error, sourceCode){
+  one.build('example-project/package.json', { 'debug': true }, function(error, sourceCode){
     if(error) {
       callback(error);
       return;
@@ -51,7 +51,7 @@ function test_build_debug(callback){
 }
 
 function test_build_console(callback){
-  one.build({ 'manifestPath':'example-project/package.json', 'sandboxConsole': true }, function(error, sourceCode){
+  one.build('example-project/package.json', { 'sandboxConsole': true }, function(error, sourceCode){
     if(error) {
       callback(error);
       return;

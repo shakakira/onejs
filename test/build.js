@@ -12,7 +12,7 @@ function moduleIds(modules){
 
 function init(options, callback){
   one.pkg.id = one.id();
-  one.build({ 'manifestPath':'example-project/package.json', 'tie':[{ 'pkg':'proc', 'obj':'process' }, { 'pkg': 'env', 'obj': 'process.env' }], 'exclude':['exclude'] }, function(error, sourceCode){
+  one.build('example-project/package.json', { 'tie':[{ 'pkg':'proc', 'obj':'process' }, { 'pkg': 'env', 'obj': 'process.env' }], 'exclude':['exclude'] }, function(error, sourceCode){
 
     if(error) {
       callback(error);
@@ -33,9 +33,9 @@ function init(options, callback){
 }
 
 function test_findPkg(mod, callback){
-  assert.equal(mod.findPkg(mod.map.main,'dependency').name, 'dependency');
-  assert.equal(mod.findPkg(mod.map[2], 'subdependency').name, 'subdependency');
-  assert.equal(mod.findPkg(mod.map[4], 'sibling').name, 'sibling');
+  assert.equal(mod.findPkg('dependency').name, 'dependency');
+  assert.equal(mod.findPkg('subdependency').name, 'subdependency');
+  assert.equal(mod.findPkg('sibling').name, 'sibling');
   callback();
 }
 
@@ -45,11 +45,11 @@ function test_useNativeRequire(mod, callback){
 }
 
 function test_findModule(mod, callback){
-  var g = mod.map[2].modules[1];
+  var g = mod.packages.dependency.modules[1];
 
-  g.id != 'g' && ( g = mod.map[2].modules[0] );
+  g.id != 'g' && ( g = mod.packages.dependency.modules[0] );
 
-  assert.equal(mod.findModule(mod.map[2].main, 'g'), g);
+  assert.equal(mod.findModule(mod.packages.dependency.index, 'g'), g);
   callback();
 }
 
@@ -67,18 +67,18 @@ function test_name(mod, callback){
 }
 
 function test_main(mod, callback){
-  assert.equal(mod.main, mod.map.main.main.call);
+  assert.equal(mod.main, mod.packages.main.index.call);
   callback();
 }
 
 function test_moduleTree(mod, callback){
-  assert.ok( assertListContent(moduleIds(mod.map[1].modules), ['a', 'b', 'web'] ) );
-  assert.ok( assertListContent(moduleIds(mod.map[3].modules), ['i'] ) );
+  assert.ok( assertListContent(moduleIds(mod.packages.main.modules), ['a', 'b', 'web'] ) );
+  assert.ok( assertListContent(moduleIds(mod.packages.subdependency.modules), ['i'] ) );
   callback();
 }
 
 function test_moduleCtx(mod, callback){
-  var pkg = mod.map[1],
+  var pkg = mod.packages.main,
       a, b, web;
 
   assert.equal(pkg.modules.length, 3);
@@ -101,16 +101,19 @@ function test_moduleCtx(mod, callback){
   assert.equal(a.id, 'a');
   assert.equal(a.pkg.name, 'example-project');
   assert.equal(typeof a.wrapper, 'function');
-  assert.ok(a.require('dependency').f);
-  assert.ok(a.require('./b').b);
+  assert.ok(a.require);
 
-  var n = mod.map.main.dependencies[ mod.map.main.dependencies[0].name == 'sibling' ? 0 :1 ].main;
+  var n = mod.packages.sibling.index;
 
   assert.equal(n.id, 'n');
   assert.equal(n.pkg.name, 'sibling');
   assert.equal(typeof n.wrapper, 'function');
-  assert.ok(n.require('dependency').f);
-  assert.ok(n.require('./p/r').r);
+
+  var g = mod.packages.dependency.modules[ mod.packages.dependency.modules[0].id == 'g' ? 0 : 1 ];
+
+  assert.equal(g.id, 'g');
+  assert.equal(g.pkg.name, 'dependency');
+  assert.equal(typeof g.wrapper, 'function');
 
   callback();
 }
@@ -126,25 +129,37 @@ function test_packageCtx(mod, callback){
   assert.equal(mod.stdin(), mod.lib.process.stdin.content);
   assert.equal(mod.stderr(), mod.lib.process.stderr.content);
 
-  var p = mod.map[1];
+  var p = mod.packages.main;
   assert.equal(p.name, 'example-project');
   assert.equal(p.id, 1);
-  assert.equal(p.parent);
+  assert.equal(p.parents.length, 0);
   assert.equal(p.mainModuleId, 'a');
-  assert.equal(p.main.id, 'a');
+  assert.equal(p.index.id, 'a');
 
   assert.ok( assertListContent(moduleIds(p.modules), ['a', 'b', 'web']) );
-
-  assert.equal(p.dependencies.length, 3);
 
   callback();
 }
 
 function test_packageTree(mod, callback){
-  assert.equal(mod.map.main.dependencies.length, 3);
-  assert.equal(mod.map.main.dependencies[0].name, 'dependency');
-  assert.equal(mod.map.main.dependencies[1].name, 'sibling');
-  assert.equal(mod.map.main.dependencies[0].dependencies[0].name, 'subdependency');
+
+  var main = mod.packages.main,
+      dependency = mod.packages.dependency,
+      sibling = mod.packages.sibling,
+      subdependency = mod.packages.subdependency;
+
+  assert.equal( subdependency.parents.length, 1 );
+  assert.equal( subdependency.parents[0], dependency.id );
+
+  assert.equal( sibling.parents.length, 2 );
+  assert.equal( sibling.parents[0], dependency.id );
+  assert.equal( sibling.parents[1], main.id );
+
+  assert.equal( dependency.parents.length, 1 );
+  assert.equal( dependency.parents[0], main.id );
+
+  assert.equal( main.parents.length, 0 );
+
   callback();
 }
 

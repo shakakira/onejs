@@ -15,7 +15,7 @@ ties = {{{ ties }}};
 
   {{>library}}
 
-  function findPkg(workingPkg, uri){
+  function findPkg(uri){
     return pkgmap[uri];
   }
 
@@ -49,7 +49,7 @@ ties = {{{ ties }}};
       } else if ( ties && ties.hasOwnProperty( uri ) ) {
         return ties[ uri ];
       } else {
-        pkg = findPkg(callingModule.pkg, uri);
+        pkg = findPkg(uri);
 
         if(!pkg && nativeRequire){
           try {
@@ -63,7 +63,7 @@ ties = {{{ ties }}};
           throw new Error('Cannot find module "'+uri+'" @[module: '+callingModule.id+' package: '+callingModule.pkg.name+']');
         }
 
-        module = pkg.main;
+        module = pkg.index;
       }
 
       if(!module){
@@ -96,7 +96,7 @@ ties = {{{ ties }}};
     };
 
     if(parent.mainModuleId == mod.id){
-      parent.main = mod;
+      parent.index = mod;
       parent.parents.length == 0 && ( locals.main = mod.call );
     }
 
@@ -106,26 +106,21 @@ ties = {{{ ties }}};
   function pkg(/* [ parentId ...], wrapper */){
 
     var wrapper = arguments[ arguments.length - 1 ],
-        parents = Array.prototype.slice.call(arguments, 0, arguments.length - 1).map(function(id){ return pkgdefs[id]; }),
+        parents = Array.prototype.slice.call(arguments, 0, arguments.length - 1),
         ctx = wrapper(parents);
 
     if(pkgdefs.hasOwnProperty(ctx.id)){
       throw new Error('Package#'+ctx.id+' "' + ctx.name + '" has duplication of itself.');
     }
 
-    var i = parents.length;
-    while( i -- ){
-      parents[i].dependencies.push(ctx);
-    }
-
     pkgdefs[ctx.id] = ctx;
     pkgmap[ctx.name] = ctx;
 
-    arguments.length == 1 && ( pkgdefs['main'] = ctx );
+    arguments.length == 1 && ( pkgmap['main'] = ctx );
   }
 
   function mainRequire(uri){
-    return pkgdefs.main.main.require(uri);
+    return pkgmap.main.index.require(uri);
   }
 
   function stderr(){
@@ -145,9 +140,9 @@ ties = {{{ ties }}};
     'findPkg'    : findPkg,
     'findModule' : findModule,
     'name'       : '{{ name }}',
-    'map'        : pkgdefs,
     'module'     : module,
     'pkg'        : pkg,
+    'packages'   : pkgmap,
     'stderr'     : stderr,
     'stdin'      : stdin,
     'stdout'     : stdout,
