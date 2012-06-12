@@ -116,7 +116,7 @@ $ onejs build package.json --exclude underscore --tie underscore=window._
 
 ## Sandboxing Console Object
 
-OneJS doesn't provide an embed, encapsulated console object by default. Pass `--sandbox-console` if needed, output is available by `projectName.stdout()` and `project.stderr()`.
+OneJS provides an embed, encapsulated console object (disabled by default). Pass `--sandbox-console` if needed, output is available by `projectName.stdout()` and `project.stderr()`.
 
 ```bash
 $ onejs build package.json foobar.js --sandbox-console
