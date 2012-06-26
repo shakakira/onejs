@@ -14,6 +14,8 @@ files that can be run on web browsers.
 ### Examples
 * See the example project included in this repository
 * MultiplayerChess.com ([Source Code](https://github.com/azer/multiplayerchess.com/tree/master/frontend) - [Output](http://multiplayerchess.com/mpc.js) )
+* [ExpressJS built by OneJS](https://gist.github.com/2415048)
+* [OneJS built by OneJS](https://gist.github.com/2998719)
 
 # Install
 ```bash
