@@ -100,6 +100,7 @@ function test_moduleCtx(mod, callback){
   assert.equal(typeof g.wrapper, 'function');
 
   assertListContent(mod.packages.fruits.index.call(), ['apple', 'orange']);
+  assertListContent(mod.packages.vegetables.index.call(), ['tomato', 'potato']);
 
   callback();
 }
