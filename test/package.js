@@ -1,4 +1,5 @@
 var assert            = require('assert'),
+    compose           = require('functools').compose,
     one               = require('../lib/'),
 
     utils             = require('./common'),
