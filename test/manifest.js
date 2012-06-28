@@ -20,7 +20,12 @@ function testFind(callback){
 
       assert.equal( filename, 'example-project/node_modules/sibling/package.json');
 
-      callback();
+      onejs.manifest.find('nonexisting', 'example-project', function(error, filename){
+        assert.ok(error);
+        assert.ok(!filename);
+        callback();
+      });
+
     });
 
   });
