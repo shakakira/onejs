@@ -11,7 +11,13 @@ function moduleIds(modules){
 }
 
 function init(options, callback){
-  common.build('tmp/built.js', ['--tie proc=process,env=process.env', '--exclude exclude'], function(exitCode){
+
+  if(options.target){
+    callback(undefined, require(options.target));
+    return;
+  }
+
+  common.build('tmp/built.js', ['--tie json=JSON,pi=Math.PI', '--exclude exclude'], function(exitCode){
     callback(undefined, require('../tmp/built'));
   });
 }
@@ -216,8 +222,8 @@ function test_parent(mod, callback){
 }
 
 function test_tie(mod, callback){
-  assert.equal(mod.require('proc'), process);
-  assert.equal(mod.require('env'), process.env);
+  assert.equal(mod.require('pi'), Math.PI);
+  assert.equal(mod.require('json'), JSON);
   callback();
 }
 

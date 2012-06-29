@@ -257,6 +257,39 @@ function test_flattenPkgTree(callback){
   callback();
 }
 
+function test_programmatic_api(callback){
+  var manifest = 'example-project/package.json',
+      options = {
+        'noprocess': false,
+        'tie': [{ 'module': 'pi', 'to': 'Math.PI' }, { 'module': 'json', 'to': 'JSON' }],
+        'exclude': ['exclude'],
+        'ignore': ['lib/ignored1.js', 'lib/ignore2', 'lib/ignore3','test'],
+        'sandboxConsole': false,
+        'debug': false
+      };
+
+  one.build(manifest, options, function(error, sourcecode){
+
+    if(error) {
+      callback(error);
+      return;
+    }
+
+    one.save('./tmp/built_programmatic_api.js', sourcecode, function(error){
+
+      if(error){
+        callback(error);
+        return;
+      }
+
+      kick({ 'name':'programmatic api build', 'path': './build', 'target': '../tmp/built_programmatic_api' }, callback);
+
+    });
+
+  });
+
+}
+
 module.exports = {
   'init': clean,
   'test_package': test_package,
@@ -274,5 +307,6 @@ module.exports = {
   'test_build':test_build,
   'test_build_debug':test_build_debug,
   'test_build_console':test_build_console,
-  'test_npmignore': test_npmignore
+  'test_npmignore': test_npmignore,
+  'test_programmatic_api': test_programmatic_api
 };

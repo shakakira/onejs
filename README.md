@@ -134,6 +134,40 @@ $ onejs build package.json foobar.js --sandbox-console
 'error! something went wrong!'
 ```
 
+## NodeJS API
+
+You can also use OneJS from inside your own NodeJS code.
+
+```javascript
+var one = require('one');
+
+var manifest = 'path/to/built.js',
+    options = {}; // see available options section below
+
+one.build('path/to/manifest.json', function(error, builtfile){
+
+  if(error) throw error;
+
+  one.save('path/to/built,js', builtfile, function(error){
+
+    if(error) throw error;
+
+    console.log('path/to/package.json built and saved successfully!');
+
+  });
+
+});
+```
+
+#### Available Options
+
+* *noprocess:* do not include process module.
+* *tie:* Registers given object path as a package. Usage: `tie: [{ 'module': 'pi', 'to': 'Math.PI' }, { 'module': 'json', 'to': 'JSON' }]`
+* *exclude:* Exclude specified packages from build. Usage: `exclude: ['underscore', 'request']`
+* *ignore:* Modules to ignore. .npmignore will not be read if this option is provided. Usage: `ignore: ['lib/foo.js', 'lib/path/to/a/directory']`
+* *sandboxConsole:* Sandboxes console object. Disabled by default.
+* *debug:* Enables debug mode. See the Debug Mode section above for information on the affects of this option.
+
 # Troubleshooting
 
 * The most common issue of a OneJS output is to lack some dependencies. In that case, make sure that the library is located under `node_modules/` properly.

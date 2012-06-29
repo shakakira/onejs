@@ -54,7 +54,7 @@ function build(){
       })
       .map(function(el){
         el = el.split('=');
-        return { 'pkg': el[0], 'obj': el[1] };
+        return { 'module': el[0], 'to': el[1] };
       });
   }
 
