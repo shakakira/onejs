@@ -124,7 +124,7 @@ function test_packageCtx(mod, callback){
 
   var p = mod.packages.main;
   assert.equal(p.name, 'example-project');
-  assert.equal(p.id, 1);
+  assert.ok(p.id);
   assert.equal(p.parents.length, 0);
   assert.equal(p.mainModuleId, 'a');
   assert.equal(p.index.id, 'a');

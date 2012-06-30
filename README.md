@@ -170,6 +170,22 @@ one.build('path/to/manifest.json', options, function(error, builtfile){
 * **sandboxConsole:** Sandboxes console object. Disabled by default.
 * **debug:** Enables debug mode. See the Debug Mode section above for information on the affects of this option.
 
+#### Applying Filters
+
+Filtering filenames might be a useful option for specific cases such as splitting build to different pieces. Here is an example usage;
+
+```javascript
+
+var one = require('one');
+
+one.modules.filters.push(function(filename){
+
+    return filename.substring(0, 7) != 'lib/foo';
+
+});
+
+```
+
 # Troubleshooting
 
 * The most common issue of a OneJS output is to lack some dependencies. In that case, make sure that the library is located under `node_modules/` properly.

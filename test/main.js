@@ -263,10 +263,14 @@ function test_programmatic_api(callback){
         'noprocess': false,
         'tie': [{ 'module': 'pi', 'to': 'Math.PI' }, { 'module': 'json', 'to': 'JSON' }],
         'exclude': ['exclude'],
-        'ignore': ['lib/ignored1.js', 'lib/ignore2', 'lib/ignore3','test'],
+        'ignore': ['lib/ignored2', 'lib/ignored3','test'],
         'sandboxConsole': false,
         'debug': false
       };
+
+  one.modules.filters.push(function(filename){
+    return filename != 'example-project/lib/ignored1.js';
+  });
 
   one.build(manifest, options, function(error, sourcecode){
 
@@ -281,6 +285,8 @@ function test_programmatic_api(callback){
         callback(error);
         return;
       }
+
+      one.modules.filters.pop();
 
       kick({ 'name':'programmatic api build', 'path': './build', 'target': '../tmp/built_programmatic_api' }, callback);
 
