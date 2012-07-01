@@ -141,20 +141,21 @@ You can also use OneJS from inside your own NodeJS code.
 ```javascript
 var one = require('one');
 
-var manifest = 'path/to/built.js',
-    options = {
+var manifest = 'path/to/manifest.json',
+    target   = 'path/to/bundle.js',
+    options  = {
       debug: true // see available options section below
     }; 
 
-one.build('path/to/manifest.json', options, function(error, builtfile){
+one.build(manifest, options, function(error, bundle){
 
   if(error) throw error;
 
-  one.save('path/to/built,js', builtfile, function(error){
+  one.save(target, bundle, function(error){
 
     if(error) throw error;
 
-    console.log('path/to/package.json built and saved successfully!');
+    console.log('path/to/package.json built and saved to path/to/bundle.js successfully!');
 
   });
 
