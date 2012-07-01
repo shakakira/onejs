@@ -48,6 +48,7 @@ function test_globals(mod, callback){
   assert.equal(typeof globals.Buffer, 'function');
   assert.ok(globals.process);
   assert.ok(globals.process.env);
+  assert.ok(globals.process.versions.one);
   callback();
 }
 

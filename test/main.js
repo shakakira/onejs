@@ -43,11 +43,40 @@ function test_build_debug(callback){
         now = ep.main().now;
 
     assert.equal( ep.debug, true);
+    assert.equal( ep.lib.process.env.SHELL, process.env.SHELL );
 
     setTimeout(function(){
       assert.ok( ep.main().now > now );
       callback();
     }, 10);
+  });
+}
+
+function test_build_noprocess(callback){
+  common.build('tmp/built_noprocess.js', ['--noprocess'], function(exitCode){
+    var ep  = require('../tmp/built_noprocess'),
+        a = ep.main();
+
+    assert.equal(process, a.process);
+    callback();
+
+  });
+}
+
+
+function test_build_debug_noprocess(callback){
+  common.build('tmp/built_debug_noprocess.js', ['--debug --noprocess'], function(exitCode){
+    var ep  = require('../tmp/built_debug_noprocess'),
+        now = ep.main().now;
+
+    assert.equal( ep.debug, true);
+    assert.ok( !ep.lib.process );
+
+    setTimeout(function(){
+      assert.ok( ep.main().now > now );
+      callback();
+    }, 10);
+
   });
 }
 
@@ -311,7 +340,9 @@ module.exports = {
   'test_moduleName':test_moduleName,
   'test_assertListContent':test_assertListContent,
   'test_build':test_build,
+  'test_build_noprocess': test_build_noprocess,
   'test_build_debug':test_build_debug,
+  'test_build_debug_noprocess':test_build_debug_noprocess,
   'test_build_console':test_build_console,
   'test_npmignore': test_npmignore,
   'test_programmatic_api': test_programmatic_api

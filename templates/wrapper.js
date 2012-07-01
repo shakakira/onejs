@@ -91,7 +91,7 @@ ties = {{{ ties }}};
       cached = true;
       {{/debug}}
       global.require = mod.require;
-      mod.wrapper(mod, mod.exports, global, global.Buffer,{{#sandbox_console}} global.console,{{/sandbox_console}} global.process, global.require);
+      mod.wrapper(mod, mod.exports, global, global.Buffer,{{#sandbox_console}} global.console,{{/sandbox_console}} {{#include_process}}global.process,{{/include_process}} global.require);
       return mod.exports;
     };
 
