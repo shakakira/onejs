@@ -58,6 +58,8 @@ function test_build_noprocess(callback){
         a = ep.main();
 
     assert.equal(process, a.process);
+    assert.equal(Buffer, a.Buffer);
+
     callback();
 
   });
