@@ -1,7 +1,8 @@
 OneJS is a command-line utility for converting CommonJS packages to single, stand-alone JavaScript
 files that can be run on web browsers.
 
-# Motivation
+# MOTIVATION
+
 * **Reusability** OneJS lets developers code JavaScript for one platform and run everywhere, without requiring any additional effort.
 * **Elegant Modularization** Modules and packages specs of CommonJS are what web apps exactly needs: a very well designed way to structure JavaScript code.
 * **NPM** OneJS moves the revolution of NPM one step forward and makes it available for client-side projects!
@@ -17,12 +18,12 @@ files that can be run on web browsers.
 * [ExpressJS built by OneJS](https://gist.github.com/2415048)
 * [OneJS built by OneJS](https://gist.github.com/2998719)
 
-# Install
+# INSTALL
 ```bash
 $ npm install one
 ```
 
-# Manual
+# MANUAL
 
 ## First Steps
 
@@ -195,7 +196,7 @@ one.modules.filters.push(function(filename){
 * Enabling verbose mode might be helpful: `onejs build package.json --verbose`
 * See the content of `projectName.map` object if it contains the missing dependency
 
-# Testing
+# TESTING
 
 Run `npm test` for running all test modules. And run `make test module=?` for specific test modules;
 
