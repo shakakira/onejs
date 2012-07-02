@@ -22,9 +22,11 @@ files that can be run on web browsers.
 $ npm install one
 ```
 
-# First Steps
+# Manual
 
-## Creating the Bundle Script
+## First Steps
+
+### Creating the Bundle Script
 
 OneJS walks the modules and dependencies defined by package.json files. To create your bundle, just go a project directory and type `onejs build` command:
 
@@ -32,7 +34,7 @@ OneJS walks the modules and dependencies defined by package.json files. To creat
 $ onejs build package.json bundle.js
 ```
 
-## Experimenting the Bundle Script
+### Experimenting the Bundle Script
 
 The output OneJS generates can be used by NodeJS, too. It's the easiest way of making sure if the output works or not.
 
@@ -48,7 +50,7 @@ In the case what you need is to try it in web browsers, onejs has a "server" opt
 $ ../bin/onejs server example-project/package.json
 ```
 
-## Using the NodeJS Core Library
+### Using the NodeJS Core Library
 
 Many modules of the core NodeJS library is able to be used by web projects, as well. OneJS has an 'install' command that converts demanded remote NodeJS module to a package on the fly:
 
@@ -187,8 +189,16 @@ one.modules.filters.push(function(filename){
 
 ```
 
-# Troubleshooting
+## Troubleshooting
 
 * The most common issue of a OneJS output is to lack some dependencies. In that case, make sure that the library is located under `node_modules/` properly.
 * Enabling verbose mode might be helpful: `onejs build package.json --verbose`
 * See the content of `projectName.map` object if it contains the missing dependency
+
+# Testing
+
+Run `npm test` for running all test modules. And run `make test module=?` for specific test modules;
+
+```bash
+> make test module=build
+```
