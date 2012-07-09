@@ -190,7 +190,7 @@ one.modules.filters.push(function(filename){
 
 ```
 
-## Troubleshooting
+# Troubleshooting
 
 * The most common issue of a OneJS output is to lack some dependencies. In that case, make sure that the library is located under `node_modules/` properly.
 * Enabling verbose mode might be helpful: `onejs build package.json --verbose`
