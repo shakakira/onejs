@@ -27,8 +27,6 @@ $ npm install one
 
 ## First Steps
 
-### Creating the Bundle Script
-
 OneJS walks the modules and dependencies defined by package.json files. To create your bundle, just go a project directory and type `onejs build` command:
 
 ```
