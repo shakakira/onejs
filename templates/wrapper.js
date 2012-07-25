@@ -156,7 +156,7 @@ ties = {{{ ties }}};
 
 })(this);
 
-{{>packages}}
+{{{packages}}}
 
 if(typeof module != 'undefined' && module.exports ){
   module.exports = {{ name }};

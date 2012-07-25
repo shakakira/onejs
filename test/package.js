@@ -6,8 +6,6 @@ var assert            = require('assert'),
     assertListContent = utils.assertListContent,
     moduleFilenames   = utils.moduleFilenames;
 
-one.quiet(1);
-
 function beforeEach(callback){
   one.pkg.id = one.id();
   callback();

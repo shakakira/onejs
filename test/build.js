@@ -228,6 +228,11 @@ function test_tie(mod, callback){
   callback();
 }
 
+function testMustacheSyntax(mod, callback){
+  assert.equal( mod.require('./a').mustacheSyntax, '{{ foobar }}');
+  callback();
+}
+
 module.exports = {
   'init': init,
   'test_name': test_name,
@@ -244,5 +249,6 @@ module.exports = {
   'test_useNativeRequire': test_useNativeRequire,
   'test_main': test_main,
   'test_parent': test_parent,
-  'test_tie': test_tie
+  'test_tie': test_tie,
+  'testMustacheSyntax': testMustacheSyntax
 };
