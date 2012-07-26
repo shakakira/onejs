@@ -108,6 +108,7 @@ function test_moduleCtx(mod, callback){
 
   assertListContent(mod.packages.fruits.index.call(), ['apple', 'orange']);
   assertListContent(mod.packages.vegetables.index.call(), ['tomato', 'potato']);
+  assertListContent(mod.packages.vehicles.index.call(), ['car', 'boat', 'truck']);
 
   callback();
 }

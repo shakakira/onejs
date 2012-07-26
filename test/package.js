@@ -142,7 +142,7 @@ function testContent(callback){
 
           pkgdict = Object.keys(pkg.pkgdict);
 
-          assert.equal(pkgdict.length, 7);
+          assert.equal(pkgdict.length, 8);
 
           assert.equal(pkgdict[0], 'example-project');
           assert.equal(pkgdict[1], 'dependency');
@@ -150,7 +150,8 @@ function testContent(callback){
           assert.equal(pkgdict[3], 'fruits');
           assert.equal(pkgdict[4], 'sibling');
           assert.equal(pkgdict[5], 'vegetables');
-          assert.equal(pkgdict[6], 'assert');
+          assert.equal(pkgdict[6], 'vehicles');
+          assert.equal(pkgdict[7], 'assert');
 
           assert.ok(assertListContent( moduleFilenames(pkg.modules), ['web.js', 'a.js', 'b.js']));
 
@@ -161,6 +162,8 @@ function testContent(callback){
           assert.ok(assertListContent( moduleFilenames(pkg.pkgdict.fruits.modules ), ['index.js', 'lib/fruits.js']));
 
           assert.ok(assertListContent( moduleFilenames(pkg.pkgdict.vegetables.modules ), ['lib/index.js']));
+
+          assert.ok(assertListContent( moduleFilenames(pkg.pkgdict.vehicles.modules ), ['index.js', 'lib/vehicles.js']));
 
           assert.ok(assertListContent( moduleFilenames(pkg.pkgdict.sibling.modules), ['p/index.js', 'p/r.js', 's/t.js', 'n.js']));
 
