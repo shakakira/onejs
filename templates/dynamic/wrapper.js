@@ -14,7 +14,7 @@ var {{ name }} = (function(global, undefined){
 ties = {{{ ties }}};
   {{/ties}}
 
-  {{>library}}
+  {{{library}}}
 
   function findPkg(uri){
     return pkgmap[uri];

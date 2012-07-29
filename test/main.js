@@ -1,13 +1,11 @@
 var child_process     = require('child_process'),
 
     one               = require('../lib'),
-    templating        = require('../lib/templating'),
-    render            = require('../lib/render'),
+    templating        = one.templating,
 
     assert            = require('assert'),
     fs                = require('fs'),
     kick              = require('highkick'),
-
 
     common            = require('./common'),
     moduleFilenames   = common.moduleFilenames,
@@ -177,9 +175,12 @@ function test_dependencies_in_parent_dir(callback){
 }
 
 function test_id(callback){
-  var i = templating.id();
-  assert.equal(typeof i, 'number');
-  assert.equal(templating.id(), i+1);
+  var i = one.id();
+
+  assert.equal(typeof i, 'function');
+
+  assert.equal(i(), 1);
+  assert.equal(i(), 2);
 
   callback();
 }
@@ -255,14 +256,14 @@ function test_renderPackage(callback){
   throw new Error('not implemented');
 }
 
-function test_makeVariableName(callback){
-  assert.equal(templating.makeVariableName('fooBar'), 'foobar');
-  assert.equal(templating.makeVariableName('foo bar'), 'fooBar');
-  assert.equal(templating.makeVariableName('foo BAR'), 'fooBar');
-  assert.equal(templating.makeVariableName('foo$bar-qux'), 'fooBarQux');
-  assert.equal(templating.makeVariableName('foo bar-=-qux'), 'fooBarQux');
-  assert.equal(templating.makeVariableName('foo_bar'), 'fooBar');
-  assert.equal(templating.makeVariableName('3.14foo15Bar9'), 'foo15bar9');
+function test_objectName(callback){
+  assert.equal(templating.objectName('fooBar'), 'foobar');
+  assert.equal(templating.objectName('foo bar'), 'fooBar');
+  assert.equal(templating.objectName('foo BAR'), 'fooBar');
+  assert.equal(templating.objectName('foo$bar-qux'), 'fooBarQux');
+  assert.equal(templating.objectName('foo bar-=-qux'), 'fooBarQux');
+  assert.equal(templating.objectName('foo_bar'), 'fooBar');
+  assert.equal(templating.objectName('3.14foo15Bar9'), 'foo15bar9');
   callback();
 }
 
@@ -277,7 +278,7 @@ function test_flattenPkgTree(callback){
         }
       };
 
-  var flat = render.flattenPkgTree(map);
+  var flat = templating.flattenPkgTree(map);
   assert.equal(flat.length, 4);
 
   var i = 4;
@@ -338,9 +339,10 @@ module.exports = {
   'test_flattenPkgTree':test_flattenPkgTree,
   'test_id':test_id,
   'test_loadModule':test_loadModule,
-  'test_makeVariableName':test_makeVariableName,
+  'test_objectName':test_objectName,
   'test_moduleName':test_moduleName,
   'test_assertListContent':test_assertListContent,
+
   'test_build':test_build,
   'test_build_noprocess': test_build_noprocess,
   'test_build_debug':test_build_debug,

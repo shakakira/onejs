@@ -1,5 +1,5 @@
 /**
- * This is module's purpose is to partly emulate NodeJS' process object on web browsers. It's not an alternative 
+ * This is module's purpose is to partly emulate NodeJS' process object on web browsers. It's not an alternative
  * and/or implementation of the "process" object.
  */
 
@@ -38,7 +38,7 @@ function notImplemented(){
 }
 
 exports.binding = (function(){
-  
+
   var table = {
     'buffer':{ 'Buffer':Buffer, 'SlowBuffer':Buffer }
   };
@@ -79,24 +79,22 @@ exports.versions = {{{ versions }}};
  * void definitions
  */
 
-exports.pid = 
+exports.pid =
 exports.uptime = 0;
 
-exports.arch = 
-exports.execPath = 
-exports.installPrefix = 
+exports.arch =
+exports.execPath =
+exports.installPrefix =
 exports.platform =
 exports.title = '';
 
-exports.chdir = 
-exports.cwd = 
-exports.exit = 
-exports.getgid = 
+exports.chdir =
+exports.cwd =
+exports.exit =
+exports.getgid =
 exports.setgid =
 exports.getuid =
 exports.setuid =
 exports.memoryUsage =
-exports.on = 
+exports.on =
 exports.umask = notImplemented;
-
-

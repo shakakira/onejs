@@ -1,7 +1,7 @@
 
 lib = (function(exports){
 
-  exports.path = (function(exports){ 
+  exports.path = (function(exports){
     {{>path}}
 
     return exports;
@@ -17,12 +17,12 @@ lib = (function(exports){
 
   {{/include_process}}
 
-  {{#sandboxConsole}}
+  {{#sandbox_console}}
     global.console = exports.console = (function(exports){
       {{>console}}
       return exports;
     }({}));
-  {{/sandboxConsole}}
+  {{/sandbox_console}}
 
   return exports;
 
