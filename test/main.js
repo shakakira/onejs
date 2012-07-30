@@ -109,6 +109,31 @@ function test_build_console(callback){
   });
 }
 
+function test_build_plain(callback){
+
+  common.build('example-project/node_modules/dependency/node_modules/vegetables', 'tmp/built_plain.js', ['--plain'], function(exitCode){
+
+    fs.readFile('tmp/built_plain.js', function(error, bf){
+
+      if(error){
+        callback(error);
+        return;
+      }
+
+      assert.ok( ! bf.toString().match(/pkgdefs/) );
+
+      var vegetables = require('../tmp/built_plain');
+
+      assertListContent(vegetables, ['tomato', 'potato']);
+
+      callback();
+
+    });
+
+  });
+
+}
+
 function test_dependencies(callback){
   one.manifest('example-project/package.json', function(error, manifest){
 
@@ -348,6 +373,8 @@ module.exports = {
   'test_build_debug':test_build_debug,
   'test_build_debug_noprocess':test_build_debug_noprocess,
   'test_build_console':test_build_console,
+  'test_build_plain': test_build_plain,
+
   'test_npmignore': test_npmignore,
   'test_programmatic_api': test_programmatic_api
 };

@@ -1,4 +1,4 @@
-var assert            = require('assert'),
+ var assert            = require('assert'),
     one               = require('../lib'),
 
     common            = require('./common'),

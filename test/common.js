@@ -1,4 +1,5 @@
-var child_process = require('child_process');
+var child_process = require('child_process'),
+    joinPath      = require('path').join;
 
 function assertListContent(a,b){
   return a.length == b.length && a.every(function(el){
@@ -6,8 +7,21 @@ function assertListContent(a,b){
   });
 }
 
-function build(target, params, callback){
-  var proc = child_process.exec('./bin/onejs build example-project/package.json ' + target + ' ' + params.join(' '));
+function build(/* [pkg], target, params, callback */){
+
+  var args     = Array.prototype.slice.call(arguments),
+      pkg      = args.length == 4 ? args[0] : 'example-project',
+      target   = args[ args.length == 4 ? 1 : 0 ],
+      params   = args[ args.length == 4 ? 2 : 1 ],
+      callback = args[ args.length -1 ],
+
+      cmd = [
+        './bin/onejs build',
+        joinPath( pkg, 'package.json' ),
+        target
+      ].concat(params).join(' ');
+
+  var proc = child_process.exec(cmd);
 
   proc.on('exit', function(code){
     callback();

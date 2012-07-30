@@ -15,17 +15,18 @@ var opt = require('optimist'),
     .options('quiet', {})
     .options('verbose', {})
     .options('version', {})
+    .options('plain', {})
     .options('help', {})
     .argv;
 
 var HELP = ['usage: onejs [action] [manifest] [options]'
           , ''
-          , 'Transforms NodeJS packages into single, stand-alone JavaScript files that can be run at other platforms.'
+          , 'Transforms NodeJS packages into single, stand-alone JavaScript files that can be run at other platforms. See the documentation at http://github.com/azer/onejs for more information.'
           , ''
           , 'actions:'
-          , '  build      <manifest> <target>         Generate a stand-alone JavaScript file from specified package. Write output to <target> if given any.'
-          , '  install    [modules]                   Package specified NodeJS core modules and locate them in node_modules/ directory. Example Usage: onejs install assert util.'
-          , '  server     <manifest> <port> <host>    Publish generated JavaScript file on web. Uses 127.0.0.1:1338 by default.'
+          , '  build      <manifest> <target>          Generate a stand-alone JavaScript file from specified package. Write output to <target> if given any.'
+          , '  install    [modules]                    Package specified NodeJS core modules and locate them in node_modules/ directory.'
+          , '  server     <manifest> <port> <host>     Publish generated JavaScript file on web. Uses 127.0.0.1:1338 by default.'
           , ''
           , 'options:'
           , '  --debug                                 Disable module caching. Pass ENV variables to the build.'
@@ -34,6 +35,7 @@ var HELP = ['usage: onejs [action] [manifest] [options]'
           , '  --exclude <package name>                Do not contain specified dependencies. e.g: --exclude underscore,request '
           , '  --noprocess                             Do not include process implementation.'
           , '  --sandbox-console                       Provide the build an encapsulated, embed console implementation.'
+          , '  --plain                                 Builds the package within a minimalistic template for the packages with single module and no dependencies.'
           , ''
           , '  --quiet                                 Make console output less verbose.'
           , '  --verbose                               Tell what\'s going on by being verbose.'
@@ -46,6 +48,7 @@ function build(){
       target         = argv._[2],
       tie            = argv.tie,
       exclude        = argv.exclude,
+      plain          = argv.plain,
       sandboxConsole = argv['sandbox-console'];
 
   if(tie){
@@ -66,7 +69,8 @@ function build(){
     'tie': tie,
     'debug': argv.debug,
     'exclude': exclude,
-    'sandboxConsole': sandboxConsole
+    'sandboxConsole': sandboxConsole,
+    'plain': plain
   };
 
   one.build(manifest, options, function(error, pkg){
