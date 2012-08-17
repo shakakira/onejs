@@ -1,3 +1,4 @@
+/*global require:false, Buffer:false, process:false, module:false */
 var {{ name }} = (function(unused, undefined){
 
   var DEBUG         = {{#debug}}true{{/debug}}{{^debug}}false{{/debug}},
@@ -165,4 +166,4 @@ if(typeof module != 'undefined' && module.exports ){
     {{ name }}.main();
   }
 
-};
+}
