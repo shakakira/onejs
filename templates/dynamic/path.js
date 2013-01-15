@@ -1,5 +1,5 @@
 // Copyright Joyent, Inc. and other Node contributors.
-// Minimized fork of NodeJS' path module, based on its an early version.
+// Minimized fork of NodeJS' path module, based on an earliest version.
 
 exports.join = function () {
   return exports.normalize(Array.prototype.join.call(arguments, "/"));
@@ -42,5 +42,3 @@ exports.normalize = function (path, keepBlanks) {
 exports.dirname = function (path) {
   return path && path.substr(0, path.lastIndexOf("/")) || ".";
 };
-
-

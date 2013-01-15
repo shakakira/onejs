@@ -1,4 +1,4 @@
-/*global require:false, Buffer:false, process:false, module:false */
+/*global require:false, module:false */
 var {{ name }} = (function(unused, undefined){
 
   var DEBUG         = {{#debug}}true{{/debug}}{{^debug}}false{{/debug}},
@@ -8,7 +8,6 @@ var {{ name }} = (function(unused, undefined){
       lib,
 
       nativeRequire = typeof require != 'undefined' && require,
-      nativeBuffer  = typeof Buffer != 'undefined' && Buffer,
       ties, locals;
 
   {{#ties}}
@@ -94,7 +93,7 @@ ties = {{{ ties }}};
       {{/debug}}
       global.require = mod.require;
 
-      mod.wrapper(mod, mod.exports, global, nativeBuffer || global.Buffer, {{#sandbox_console}} global.console,{{/sandbox_console}} {{#include_process}}global.process,{{/include_process}} global.require);
+      mod.wrapper(mod, mod.exports, global, global.require);
       return mod.exports;
     };
 
@@ -126,29 +125,13 @@ ties = {{{ ties }}};
     return pkgmap.main.index.require(uri);
   }
 
-  function stderr(){
-    return lib.process.stderr.content;
-  }
-
-  function stdin(){
-    return lib.process.stdin.content;
-  }
-
-  function stdout(){
-    return lib.process.stdout.content;
-  }
-
   return (locals = {
-    'lib'        : lib,
     'findPkg'    : findPkg,
     'findModule' : findModule,
     'name'       : '{{ name }}',
     'module'     : module,
     'pkg'        : pkg,
     'packages'   : pkgmap,
-    'stderr'     : stderr,
-    'stdin'      : stdin,
-    'stdout'     : stdout,
     'require'    : mainRequire
 {{#debug}}
    ,'debug'      : true

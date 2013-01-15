@@ -41,71 +41,11 @@ function test_build_debug(callback){
         now = ep.main().now;
 
     assert.equal( ep.debug, true);
-    assert.equal( ep.lib.process.env.SHELL, process.env.SHELL );
 
     setTimeout(function(){
       assert.ok( ep.main().now > now );
       callback();
     }, 10);
-  });
-}
-
-function test_build_noprocess(callback){
-  common.build('tmp/built_noprocess.js', ['--noprocess'], function(exitCode){
-    var ep  = require('../tmp/built_noprocess'),
-        a = ep.main();
-
-    assert.equal(process, a.process);
-    assert.equal(Buffer, a.Buffer);
-
-    callback();
-
-  });
-}
-
-
-function test_build_debug_noprocess(callback){
-  common.build('tmp/built_debug_noprocess.js', ['--debug --noprocess'], function(exitCode){
-    var ep  = require('../tmp/built_debug_noprocess'),
-        now = ep.main().now;
-
-    assert.equal( ep.debug, true);
-    assert.ok( !ep.lib.process );
-
-    setTimeout(function(){
-      assert.ok( ep.main().now > now );
-      callback();
-    }, 10);
-
-  });
-}
-
-function test_build_console(callback){
-  common.build('tmp/built_console.js', ['--sandbox-console'], function(exitCode){
-
-    var ep  = require('../tmp/built_console'),
-        a = ep.main();
-
-    assert.equal(ep.stdout(), 'Elle creuse encore, cette vieville amie au regard fatigué.\n');
-    ep.lib.process.stdout.content = '';
-
-    assert.ok(a.console != console);
-
-    assert.equal(ep.stdout(), '');
-    assert.equal(ep.stderr(), '');
-
-    a.console.log('foo');
-    assert.equal(ep.stdout(), 'foo\n');
-
-    a.console.info('bar');
-    assert.equal(ep.stdout(), 'foo\nbar\n');
-
-    a.console.warn('foo');
-    assert.equal(ep.stderr(), 'foo\n');
-    a.console.error('bar');
-    assert.equal(ep.stderr(), 'foo\nbar\n');
-
-    callback();
   });
 }
 
@@ -258,7 +198,7 @@ function test_loadModule(callback){
     try {
       assert.equal(module.name, 'a');
       assert.equal(module.filename, 'example-project/lib/a.js');
-      assert.equal(module.content.substring(0,7), 'console');
+      assert.equal(module.content.substring(0,12), 'var mustache');
       callback();
     } catch(err){
       callback(err);
@@ -317,11 +257,9 @@ function test_flattenPkgTree(callback){
 function test_programmatic_api(callback){
   var manifest = 'example-project/package.json',
       options = {
-        'noprocess': false,
         'tie': [{ 'module': 'pi', 'to': 'Math.PI' }, { 'module': 'json', 'to': 'JSON' }],
         'exclude': ['exclude'],
         'ignore': ['lib/ignored2', 'lib/ignored3','test'],
-        'sandboxConsole': false,
         'debug': false
       };
 
@@ -369,10 +307,7 @@ module.exports = {
   'test_assertListContent':test_assertListContent,
 
   'test_build':test_build,
-  'test_build_noprocess': test_build_noprocess,
   'test_build_debug':test_build_debug,
-  'test_build_debug_noprocess':test_build_debug_noprocess,
-  'test_build_console':test_build_console,
   'test_build_plain': test_build_plain,
 
   'test_npmignore': test_npmignore,

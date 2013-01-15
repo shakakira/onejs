@@ -43,15 +43,6 @@ function test_findModule(mod, callback){
   callback();
 }
 
-function test_globals(mod, callback){
-  var globals = mod.require('./a');
-  assert.equal(typeof globals.Buffer, 'function');
-  assert.ok(globals.process);
-  assert.ok(globals.process.env);
-  assert.ok(globals.process.versions.one);
-  callback();
-}
-
 function test_name(mod, callback){
   assert.equal(mod.name, 'exampleProject');
   callback();
@@ -117,13 +108,6 @@ function test_packageCtx(mod, callback){
   assert.ok(mod.require);
   assert.equal(mod.name, 'exampleProject');
 
-  assert.equal(typeof mod.stderr(), 'string');
-  assert.equal(typeof mod.stdin(), 'string');
-  assert.equal(typeof mod.stdout(), 'string');
-  assert.equal(mod.stdout(), mod.lib.process.stdout.content);
-  assert.equal(mod.stdin(), mod.lib.process.stdin.content);
-  assert.equal(mod.stderr(), mod.lib.process.stderr.content);
-
   var p = mod.packages.main;
   assert.equal(p.name, 'example-project');
   assert.ok(p.id);
@@ -160,40 +144,6 @@ function test_packageTree(mod, callback){
   assert.equal( main.parents.length, 0 );
 
   callback();
-}
-
-function test_process(mod, callback){
-  var proc = mod.lib.process;
-
-  assert.ok(proc);
-  assert.equal(typeof proc.Stream, 'function');
-  assert.equal(typeof proc.Buffer, 'function');
-
-  assert.equal(proc.binding('buffer').Buffer, proc.Buffer);
-  assert.equal(proc.binding('buffer').SlowBuffer, proc.Buffer);
-
-  assert.equal(proc.argv[0], 'onejs');
-
-  assert.ok(proc.env);
-
-  assert.ok(proc.stderr instanceof proc.Stream);
-  assert.ok(proc.stdin instanceof proc.Stream);
-  assert.ok(proc.stdout instanceof proc.Stream);
-
-  assert.ok(proc.pid == proc.uptime);
-  assert.ok(proc.arch == proc.execPath == proc.installPrefix == proc.platform == proc.title == '');
-
-  proc.stdout.write('hello');
-  proc.stdout.write(' world');
-  assert.equal(proc.stdout.content, 'hello world');
-
-  var isNextTickAsync = false;
-  proc.nextTick(function(){
-    assert.ok(isNextTickAsync);
-    callback();
-  });
-
-  isNextTickAsync = true;
 }
 
 function test_require(mod, callback){
@@ -245,8 +195,6 @@ module.exports = {
   'test_findModule': test_findModule,
   'test_require': test_require,
   'test_module_caching': test_module_caching,
-  'test_process': test_process,
-  'test_globals': test_globals,
   'test_useNativeRequire': test_useNativeRequire,
   'test_main': test_main,
   'test_parent': test_parent,

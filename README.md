@@ -59,32 +59,6 @@ Many modules of the core NodeJS library is able to be used by web projects, as w
 
 The reference of available modules that you can install: https://github.com/azer/onejs/blob/master/lib/install_dict.js
 
-## Process
-
-OneJS includes a simple emulation of [NodeJS' process](http://nodejs.org/api/process.html). (Pass --noprocess if you don't need it)
-
-```javascript
-> exampleProject.require('dependency'), exampleProject.require('./b');
-> exampleProject.lib.process.stdout.write("Hello World");
-> exampleProject.stdout();
-"Hello World"
-```
-
-## Debug Mode
-
-Pass `--debug` parameter disabling cache and passing ENV variables to the built file. If we assume that we have a module that depends on ENV;
-
-```javascript
-if( process.env.VERBOSE ){
-  console.log( "fabula de narratur" );
-}
-```
-Above module becomes available to access ENV on debug-mode;
-
-```bash
-$ VERBOSE=1 onejs build package.json --debug
-```
-
 ## Requiring Global Variables
 
 OneJS doesn't change the way we access global variables. However, we may want to use require statements to access global variables (such as document, jQuery etc..) for purposes like dependency injection or documentation. Following example demonstrates the usage of `--tie` option that lets us require global variables;
@@ -117,24 +91,6 @@ If the case is to remove a duplication from the build, it would be a good idea t
 $ onejs build package.json --exclude underscore --tie underscore=window._
 ```
 
-## Sandboxing Console Object
-
-OneJS provides an embed, encapsulated console object (disabled by default). Pass `--sandbox-console` if needed, output is available by `projectName.stdout()` and `project.stderr()`.
-
-```bash
-$ onejs build package.json foobar.js --sandbox-console
-```
-
-```javascript
-> var foobar = require('./foobar');
-> foobar.stdout();
-'Trying out the embed console'
-'Hello world!'
-> foobar.stderr()
-'warning! something may be going wrong!'
-'error! something went wrong!'
-```
-
 ## NodeJS API
 
 You can also use OneJS from inside your own NodeJS code.
@@ -146,30 +102,24 @@ var manifest = 'path/to/manifest.json',
     target   = 'path/to/bundle.js',
     options  = {
       debug: true // see available options section below
-    }; 
+    };
 
 one.build(manifest, options, function(error, bundle){
-
   if(error) throw error;
 
   one.save(target, bundle, function(error){
-
     if(error) throw error;
 
     console.log('path/to/package.json built and saved to path/to/bundle.js successfully!');
-
   });
-
 });
 ```
 
 #### Available Options
 
-* **noprocess:** do not include process module.
 * **tie:** Registers given object path as a package. Usage: `tie: [{ 'module': 'pi', 'to': 'Math.PI' }, { 'module': 'json', 'to': 'JSON' }]`
 * **exclude:** Exclude specified packages from build. Usage: `exclude: ['underscore', 'request']`
 * **ignore:** Modules to ignore. .npmignore will not be read if this option is provided. Usage: `ignore: ['lib/foo.js', 'lib/path/to/a/directory']`
-* **sandboxConsole:** Sandboxes console object. Disabled by default.
 * **debug:** Enables debug mode. See the Debug Mode section above for information on the affects of this option.
 
 #### Applying Filters
@@ -177,15 +127,11 @@ one.build(manifest, options, function(error, bundle){
 Filtering filenames might be a useful option for specific cases such as splitting build to different pieces. Here is an example usage;
 
 ```javascript
-
 var one = require('one');
 
 one.modules.filters.push(function(filename){
-
     return filename.substring(0, 7) != 'lib/foo';
-
 });
-
 ```
 
 # Troubleshooting
