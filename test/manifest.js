@@ -2,23 +2,23 @@ var assert   = require('assert'),
     onejs    = require('../lib/');
 
 function testFind(callback){
-  onejs.manifest.find('dependency', 'example-project', function(error, filename){
+  onejs.manifest.find('dependency', 'test/packages/example-project', function(error, filename){
 
     if(error){
       callback(error);
       return;
     }
 
-    assert.equal( filename, 'example-project/node_modules/dependency/package.json');
+    assert.equal( filename, 'test/packages/example-project/node_modules/dependency/package.json');
 
-    onejs.manifest.find('sibling', 'example-project/node_modules/dependency/node_modules/subdependency', function(error, filename){
+    onejs.manifest.find('sibling', 'test/packages/example-project/node_modules/dependency/node_modules/subdependency', function(error, filename){
 
       if(error){
         callback(error);
         return;
       }
 
-      assert.equal( filename, 'example-project/node_modules/sibling/package.json');
+      assert.equal( filename, 'test/packages/example-project/node_modules/sibling/package.json');
 
       onejs.manifest.find('nonexisting', 'example-project', function(error, filename){
         assert.ok(error);
@@ -32,7 +32,7 @@ function testFind(callback){
 }
 
 function testRead(callback){
-  onejs.manifest('example-project/package.json', function(error, manifest){
+  onejs.manifest('test/packages/example-project/package.json', function(error, manifest){
 
     if(error){
       callback(error);

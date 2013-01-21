@@ -41,14 +41,19 @@ var HELP = ['usage: onejs [action] [manifest] [options]'
           , ''].join('\n');
 
 function build(){
-  var manifest       = argv._[1] || 'package.json',
-      target         = argv._[2],
-      tie            = argv.tie,
-      exclude        = argv.exclude,
-      plain          = argv.plain;
+  var manifest = argv._[1] || 'package.json',
+      target   = argv._[2],
+      tie      = argv.tie,
+      exclude  = argv.exclude,
+      options  = {
+        debug   : argv.debug,
+        exclude : undefined,
+        plain   : argv.plain,
+        tie     : undefined
+      };
 
   if(tie){
-    tie = tie.split(',')
+    options.tie = tie.split(',')
       .filter(function(el){
         return el && el.indexOf('=') > -1;
       })
@@ -58,14 +63,7 @@ function build(){
       });
   }
 
-  exclude && ( exclude = exclude.split(',').filter(function(el){ return el && el.length; }) );
-
-  var options = {
-    'tie': tie,
-    'debug': argv.debug,
-    'exclude': exclude,
-    'plain': plain
-  };
+  exclude && ( options.exclude = exclude.split(',').filter(function(el){ return el && el.length; }) );
 
   one.build(manifest, options, function(error, pkg){
     if(error) throw error;

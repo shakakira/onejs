@@ -51,7 +51,7 @@ function test_build_debug(callback){
 
 function test_build_plain(callback){
 
-  common.build('example-project/node_modules/dependency/node_modules/vegetables', 'tmp/built_plain.js', ['--plain'], function(exitCode){
+  common.build('test/packages/example-project/node_modules/dependency/node_modules/vegetables', 'tmp/built_plain.js', ['--plain'], function(exitCode){
 
     fs.readFile('tmp/built_plain.js', function(error, bf){
 
@@ -75,14 +75,14 @@ function test_build_plain(callback){
 }
 
 function test_dependencies(callback){
-  one.manifest('example-project/package.json', function(error, manifest){
+  one.manifest('test/packages/example-project/package.json', function(error, manifest){
 
     if(error){
       callback(error);
       return;
     }
 
-    one.pkg.construct({ 'manifest': manifest, 'wd': 'example-project/' }, function(error, pkg1){
+    one.pkg.construct({ 'manifest': manifest, 'wd': 'test/packages/example-project/' }, function(error, pkg1){
 
 
       one.dependencies(pkg1, { 'exclude':['exclude'] }, function(error, deps){
@@ -117,7 +117,7 @@ function test_dependencies_in_parent_dir(callback){
         'sibling':'*'
       }
     },
-    'wd':'example-project/node_modules/dependency',
+    'wd':'test/packages/example-project/node_modules/dependency',
     'pkgdict':{}
   };
 
@@ -152,7 +152,7 @@ function test_id(callback){
 
 
 function test_modules(callback){
-  one.modules({ 'name':'example-project', 'ignore':['lib/ignore'], 'dirs':{'lib':'lib'}, 'wd':'example-project/' }, {}, function(error, modules){
+  one.modules({ 'name':'example-project', 'ignore':['lib/ignore'], 'dirs':{'lib':'lib'}, 'wd':'test/packages/example-project/' }, {}, function(error, modules){
 
     if(error){
       callback(error);
@@ -161,7 +161,7 @@ function test_modules(callback){
 
     assert.ok(assertListContent(moduleFilenames(modules), ['a.js', 'b.js','web.js']));
 
-    one.modules({ 'name': 'subdependency', 'manifest':{ 'main':'i' }, 'wd':'example-project/node_modules/dependency/node_modules/subdependency/' }, {}, function(error, modules){
+    one.modules({ 'name': 'subdependency', 'manifest':{ 'main':'i' }, 'wd':'test/packages/example-project/node_modules/dependency/node_modules/subdependency/' }, {}, function(error, modules){
 
       if(error){
         callback(error);
@@ -194,10 +194,10 @@ function test_filterFilename(callback){
 }
 
 function test_loadModule(callback){
-  one.modules.loadModule('example-project/lib/a.js', function(error, module){
+  one.modules.loadModule('test/packages/example-project/lib/a.js', function(error, module){
     try {
       assert.equal(module.name, 'a');
-      assert.equal(module.filename, 'example-project/lib/a.js');
+      assert.equal(module.filename, 'test/packages/example-project/lib/a.js');
       assert.equal(module.content.substring(0,12), 'var mustache');
       callback();
     } catch(err){
@@ -255,7 +255,7 @@ function test_flattenPkgTree(callback){
 }
 
 function test_programmatic_api(callback){
-  var manifest = 'example-project/package.json',
+  var manifest = 'test/packages/example-project/package.json',
       options = {
         'tie': [{ 'module': 'pi', 'to': 'Math.PI' }, { 'module': 'json', 'to': 'JSON' }],
         'exclude': ['exclude'],
@@ -264,7 +264,7 @@ function test_programmatic_api(callback){
       };
 
   one.modules.filters.push(function(filename){
-    return filename != 'example-project/lib/ignored1.js';
+    return filename != 'test/packages/example-project/lib/ignored1.js';
   });
 
   one.build(manifest, options, function(error, sourcecode){

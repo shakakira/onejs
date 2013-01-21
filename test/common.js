@@ -10,7 +10,7 @@ function assertListContent(a,b){
 function build(/* [pkg], target, params, callback */){
 
   var args     = Array.prototype.slice.call(arguments),
-      pkg      = args.length == 4 ? args[0] : 'example-project',
+      pkg      = args.length == 4 ? args[0] : 'test/packages/example-project',
       target   = args[ args.length == 4 ? 1 : 0 ],
       params   = args[ args.length == 4 ? 2 : 1 ],
       callback = args[ args.length -1 ],

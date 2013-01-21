@@ -3,7 +3,7 @@ var assert            = require('assert'),
     assertListContent = require('./common').assertListContent;
 
 function test_content(callback){
-  one.npmignore('./example-project', function(error, content){
+  one.npmignore('./test/packages/example-project', function(error, content){
     assert.ok(!error);
     assertListContent(content, ['lib.ignored1.js', 'lib/ignored2', 'lib/ignored3', 'test']);
     callback();

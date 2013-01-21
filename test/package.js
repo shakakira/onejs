@@ -110,14 +110,14 @@ function testConstruct(callback){
 }
 
 function testContent(callback){
-  one.manifest('example-project/package.json', function(error, manifest){
+  one.manifest('test/packages/example-project/package.json', function(error, manifest){
 
     if(error){
       callback(error);
       return;
     }
 
-    one.pkg.construct({ 'manifest': manifest, 'ignore':['lib/ignored1.js', 'lib/ignored2', 'lib/ignored3'], 'wd':'example-project/' }, function(error, pkg){
+    one.pkg.construct({ 'manifest': manifest, 'ignore':['lib/ignored1.js', 'lib/ignored2', 'lib/ignored3'], 'wd':'test/packages/example-project/' }, function(error, pkg){
 
       if(error){
         callback(error);
@@ -181,7 +181,7 @@ function testContent(callback){
 }
 
 function testMain(callback){
-  one.pkg('example-project/package.json', { 'exclude':['exclude'] }, function(error, ep){
+  one.pkg('test/packages/example-project/package.json', { 'exclude':['exclude'] }, function(error, ep){
     assert.equal(ep.id, 1);
     assert.equal(ep.name, 'example-project');
     assert.equal(ep.manifest.name, 'example-project');

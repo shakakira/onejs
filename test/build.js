@@ -11,7 +11,6 @@ function moduleIds(modules){
 }
 
 function init(options, callback){
-
   if(options.target){
     callback(undefined, require(options.target));
     return;
