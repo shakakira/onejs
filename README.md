@@ -33,7 +33,7 @@ OneJS walks the modules and dependencies defined by package.json files. To creat
 $ onejs build package.json bundle.js
 ```
 
-### Experimenting the Bundle Script
+**Experimenting the Bundle Script**
 
 The output OneJS generates can be used by NodeJS, too. It's the easiest way of making sure if the output works or not.
 
@@ -49,17 +49,7 @@ In the case what you need is to try it in web browsers, onejs has a "server" opt
 $ ../bin/onejs server example-project/package.json
 ```
 
-### Using the NodeJS Core Library
-
-Many modules of the core NodeJS library is able to be used by web projects, as well. OneJS has an 'install' command that converts demanded remote NodeJS module to a package on the fly:
-
-```javascript
-> onejs install assert path url
-```
-
-The reference of available modules that you can install: https://github.com/azer/onejs/blob/master/lib/install_dict.js
-
-## Requiring Global Variables
+**Requiring Global Variables**
 
 OneJS doesn't change the way we access global variables. However, we may want to use require statements to access global variables (such as document, jQuery etc..) for purposes like dependency injection or documentation. Following example demonstrates the usage of `--tie` option that lets us require global variables;
 
@@ -77,7 +67,7 @@ $(dom).ready(function(){
 $ onejs build package.json --tie pi=Math.PI,jquery=jQuery,dom=document
 ```
 
-## Excluding Specific Dependencies
+**Excluding Specific Dependencies**
 
 There are some cases we prefer to not have some dependency packages in the build. The `--exclude` option leads OneJS ignore the specified packages;
 
@@ -91,10 +81,30 @@ If the case is to remove a duplication from the build, it would be a good idea t
 $ onejs build package.json --exclude underscore --tie underscore=window._
 ```
 
+#### Command-Line API
+```
+usage: onejs [action] [manifest] [options]
+
+Transforms NodeJS packages into single, stand-alone JavaScript files that can be run at other platforms. See the documentation at http://github.com/azer/onejs for more information.
+
+actions:
+  build      <manifest> <target>          Generate a stand-alone JavaScript file from specified package. Write output to <target> if given any.
+  server     <manifest> <port> <host>     Publish generated JavaScript file on web. Uses 127.0.0.1:1338 by default.
+
+options:
+  --debug                                 Disable module caching.
+
+  --tie <package name>=<global object>    Create package links to specified global variables. e.g; --tie dom=window.document,jquery=jQuery
+  --exclude <package name>                Do not contain specified dependencies. e.g: --exclude underscore,request
+  --plain                                 Builds the package within a minimalistic template for the packages with single module and no dependencies.
+
+  --quiet                                 Make console output less verbose.
+  --verbose                               Tell what's going on by being verbose.
+  --version                               Show version and exit.
+  --help                                  Show help.
+```
+
 ## NodeJS API
-
-You can also use OneJS from inside your own NodeJS code.
-
 ```javascript
 var one = require('one');
 
@@ -115,14 +125,7 @@ one.build(manifest, options, function(error, bundle){
 });
 ```
 
-#### Available Options
-
-* **tie:** Registers given object path as a package. Usage: `tie: [{ 'module': 'pi', 'to': 'Math.PI' }, { 'module': 'json', 'to': 'JSON' }]`
-* **exclude:** Exclude specified packages from build. Usage: `exclude: ['underscore', 'request']`
-* **ignore:** Modules to ignore. .npmignore will not be read if this option is provided. Usage: `ignore: ['lib/foo.js', 'lib/path/to/a/directory']`
-* **debug:** Enables debug mode. See the Debug Mode section above for information on the affects of this option.
-
-#### Applying Filters
+**Applying Filters**
 
 Filtering filenames might be a useful option for specific cases such as splitting build to different pieces. Here is an example usage;
 
@@ -136,7 +139,7 @@ one.modules.filters.push(function(filename){
 
 # Troubleshooting
 
-* The most common issue of a OneJS output is to lack some dependencies. In that case, make sure that the library is located under `node_modules/` properly.
+* The most common issue is to lack some dependencies. In that case, make sure that the missing dependency is located under `node_modules/` properly.
 * Enabling verbose mode might be helpful: `onejs build package.json --verbose`
 * See the content of `projectName.map` object if it contains the missing dependency
 

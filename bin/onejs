@@ -23,7 +23,6 @@ var HELP = ['usage: onejs [action] [manifest] [options]'
           , ''
           , 'actions:'
           , '  build      <manifest> <target>          Generate a stand-alone JavaScript file from specified package. Write output to <target> if given any.'
-          , '  install    [modules]                    Package specified NodeJS core modules and locate them in node_modules/ directory.'
           , '  server     <manifest> <port> <host>     Publish generated JavaScript file on web. Uses 127.0.0.1:1338 by default.'
           , ''
           , 'options:'
@@ -94,15 +93,6 @@ function server(){
   one.publish({ 'manifestPath':manifest, 'host':host, 'port':port, 'debug': debug });
 }
 
-function setupNodeDeps(){
-  var modules = argv._.slice(1);
-  modules.push(function(error){
-    if(error) throw error;
-  });
-
-  one.setupNodeModules.apply(undefined, modules);
-}
-
 function verbosity(){
   one.verbosity('INFO');
   argv.quiet && one.quiet(true);
@@ -121,7 +111,6 @@ verbosity();
 switch(action){
   case 'build': build(); break;
   case 'server': server(); break;
-  case 'install': setupNodeDeps(); break;
   default:
     if(argv.version){
       version();

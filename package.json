@@ -16,7 +16,6 @@
     "combiner":"1.2.x",
     "mustache":"0.4.x",
     "log4js":"0.4.1",
-    "genpkg":"0.x",
     "boxcars":"0.x"
   },
   "devDependencies":{

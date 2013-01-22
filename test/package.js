@@ -1,7 +1,6 @@
 var assert            = require('assert'),
     compose           = require('functools').compose,
     one               = require('../lib/'),
-
     utils             = require('./common'),
     assertListContent = utils.assertListContent,
     moduleFilenames   = utils.moduleFilenames;
@@ -137,12 +136,12 @@ function testContent(callback){
           assert.equal(pkg.id, 1);
           assert.equal(pkg.name, 'example-project');
           assert.equal(pkg.manifest.name, 'example-project');
-          assert.equal(pkg.dependencies.length, 3);
+          assert.equal(pkg.dependencies.length, 2);
           assert.equal(pkg.main.filename, 'a.js');
 
           pkgdict = Object.keys(pkg.pkgdict);
 
-          assert.equal(pkgdict.length, 8);
+          assert.equal(pkgdict.length, 7);
 
           assert.equal(pkgdict[0], 'example-project');
           assert.equal(pkgdict[1], 'dependency');
@@ -151,7 +150,6 @@ function testContent(callback){
           assert.equal(pkgdict[4], 'sibling');
           assert.equal(pkgdict[5], 'vegetables');
           assert.equal(pkgdict[6], 'vehicles');
-          assert.equal(pkgdict[7], 'assert');
 
           assert.ok(assertListContent( moduleFilenames(pkg.modules), ['web.js', 'a.js', 'b.js']));
 
@@ -185,7 +183,7 @@ function testMain(callback){
     assert.equal(ep.id, 1);
     assert.equal(ep.name, 'example-project');
     assert.equal(ep.manifest.name, 'example-project');
-    assert.equal(ep.dependencies.length, 3);
+    assert.equal(ep.dependencies.length, 2);
     assert.equal(ep.main.filename, 'a.js');
     callback();
   });

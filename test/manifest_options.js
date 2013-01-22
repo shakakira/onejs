@@ -22,7 +22,5 @@ exports.testExcluding = function(sai, done){
 exports.testTies = function(sai, done){
   assert.equal(Math.PI, sai.require('pi'));
   assert.equal(Number.MAX_VALUE, sai.require('max'));
-
-
   done();
 };

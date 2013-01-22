@@ -91,8 +91,8 @@ function test_dependencies(callback){
           return;
         }
 
-        assert.equal(deps.length, 3);
-        assert.ok(assertListContent( deps.map(function(el){ return el.name; }), ['dependency', 'sibling', 'assert']));
+        assert.equal(deps.length, 2);
+        assert.ok(assertListContent( deps.map(function(el){ return el.name; }), ['dependency', 'sibling']));
 
         var dependency = deps.filter(function(el){ return el.name == 'dependency' })[0];
         assert.equal(dependency.dependencies[0].name, 'subdependency');
