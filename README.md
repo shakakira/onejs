@@ -81,7 +81,7 @@ If the case is to remove a duplication from the build, it would be a good idea t
 $ onejs build package.json --exclude underscore --tie underscore=window._
 ```
 
-#### Command-Line API
+### Command-Line API
 ```
 usage: onejs [action] [manifest] [options]
 
@@ -104,7 +104,7 @@ options:
   --help                                  Show help.
 ```
 
-## NodeJS API
+### NodeJS API
 ```javascript
 var one = require('one');
 
