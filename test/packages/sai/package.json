@@ -1,0 +1,25 @@
+{
+  "name": "sai",
+  "version": "0.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "monouchi":"*",
+    "yoku":"*",
+    "tsume":"*"
+  },
+  "web": {
+    "save": {
+      "sai": "../../tmp/sai.js",
+      "tsume": {
+        "to": "../../tmp/tsume.js",
+        "url": "http://static.kit.ty/js/packages/tsume.js"
+      }
+    },
+    "tie": {
+      "pi": "Math.PI",
+      "max": "Number.MAX_VALUE"
+    },
+    "exclude": ["yoku"]
+  },
+  "license": "BSD"
+}

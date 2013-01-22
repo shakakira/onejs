@@ -40,7 +40,7 @@ ties = {{{ ties }}};
     return module;
   }
 
-  function genRequire(callingModule){
+  function newRequire(callingModule){
     return function require(uri){
       var module,
           pkg;
@@ -82,7 +82,7 @@ ties = {{{ ties }}};
         cached = false;
 
     mod.exports = {};
-    mod.require = genRequire(mod);
+    mod.require = newRequire(mod);
 
     mod.call = function(){
       {{^debug}}
@@ -112,7 +112,7 @@ ties = {{{ ties }}};
         ctx = wrapper(parents);
 
     if(pkgdefs.hasOwnProperty(ctx.id)){
-      throw new Error('Package#'+ctx.id+' "' + ctx.name + '" has duplication of itself.');
+      throw new Error('Package#'+ctx.id+' "' + ctx.name + '" has a duplication of itself.');
     }
 
     pkgdefs[ctx.id] = ctx;
